@@ -9,6 +9,8 @@ import ModelLoader from "./ModelLoader";
 const VaporWaveNew = () => {
   const canvasRef = useRef(null);
   const sceneRef = useRef(null);
+  const cameraRef = useRef(null);
+  const rendererRef = useRef(null);
 
   const [modelLoaded, setModelLoaded] = useState(false);
 
@@ -50,9 +52,22 @@ const VaporWaveNew = () => {
 
   return (
     <div className="vapor-wave">
-      <TitleSection handleGameStart={() => handleGameStart(sceneRef.current)} />
-      <VaporWaveScene canvasRef={canvasRef} sceneRef={sceneRef} />
-      {modelLoaded && <ModelLoader scene={sceneRef.current} />}
+      <TitleSection 
+        handleGameStart={() => handleGameStart(sceneRef.current)} 
+      />
+      <VaporWaveScene 
+        canvasRef={canvasRef} 
+        sceneRef={sceneRef} 
+        cameraRef={cameraRef}
+        rendererRef={rendererRef}
+      />
+      {modelLoaded && ( 
+        <ModelLoader 
+          scene={sceneRef.current}
+          camera={cameraRef.current}
+          renderer={rendererRef.current}
+        />
+      )}
     </div>
   );
 };

@@ -12,7 +12,7 @@ const TEXTURES = {
     metalness: "https://res.cloudinary.com/dg5nsedzw/image/upload/v1641657200/blog/vaporwave-threejs-textures/metalness.png",
 };
 
-const VaporWaveScene = ({ canvasRef, sceneRef }) => {
+const VaporWaveScene = ({ canvasRef, sceneRef, cameraRef, rendererRef }) => {
     useEffect(() => {
         const scene = new THREE.Scene();
         sceneRef.current = scene;
@@ -46,10 +46,12 @@ const VaporWaveScene = ({ canvasRef, sceneRef }) => {
         const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.01, 20);
         camera.position.set(0, 0.56, -0.2);
         camera.rotation.x = -Math.PI / 2;
+        cameraRef.current = camera;
 
         const renderer = new THREE.WebGLRenderer({ canvas: canvasRef.current, alpha: true });
         renderer.setSize(sizes.width, sizes.height);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        rendererRef.current = renderer;
 
         const effectComposer = new EffectComposer(renderer);
         effectComposer.addPass(new RenderPass(scene, camera));

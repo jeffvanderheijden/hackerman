@@ -14,12 +14,12 @@ const ModelLoader = ({ scene, camera, renderer, onModelLoaded }) => {
         scene.add(hemiLight);
 
         const directionalLight = new THREE.DirectionalLight("#ffffff", 5);
-directionalLight.castShadow = true;
+        directionalLight.castShadow = true;
         directionalLight.position.set(5, 5, 5);
         scene.add(directionalLight);
 
         const pointLight = new THREE.PointLight("#ff00ff", 10, 25);
-pointLight.castShadow = true;
+        pointLight.castShadow = true;
         pointLight.position.set(0, 3, 2);
         scene.add(pointLight);
 
@@ -61,8 +61,8 @@ pointLight.castShadow = true;
                         if (child.name.toLowerCase().includes("jaw")) {
                             jaw = child;
                         } else if (child.name.toLowerCase().includes("head")) {
-    skullTop = child;
-}
+                            skullTop = child;
+                        }
                     }
                 });
 

@@ -4,10 +4,12 @@ import "./VaporWave.css";
 
 import TitleSection from "./TitleSection";
 import VaporWaveScene from "./VaporWaveScene";
-import ModelLoader from "./ModelLoader";
+import SkullScene from "./SkullScene";
+// import ModelLoader from "./ModelLoader";
 
 const VaporWaveNew = () => {
   const canvasRef = useRef(null);
+  const skullCanvasRef = useRef(null);
   const sceneRef = useRef(null);
   const cameraRef = useRef(null);
   const rendererRef = useRef(null);
@@ -62,11 +64,12 @@ const VaporWaveNew = () => {
         rendererRef={rendererRef}
       />
       {modelLoaded && ( 
-        <ModelLoader 
-          scene={sceneRef.current}
-          camera={cameraRef.current}
-          renderer={rendererRef.current}
-        />
+        <>
+          <SkullScene 
+            canvasRef={skullCanvasRef}
+          />
+          <canvas ref={skullCanvasRef} className="skull-webgl" />;
+        </>
       )}
     </div>
   );

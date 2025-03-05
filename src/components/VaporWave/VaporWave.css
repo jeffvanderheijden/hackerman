@@ -75,12 +75,16 @@
     transform: translate(-50%, 0%) scale(0.95);
 }
 
-.webgl {
+.webgl,
+.skull-webgl {
     position: fixed;
     top: 0;
     left: 0;
     outline: none;
     opacity: 0;
+}
+.skull-webgl {
+    opacity: 1;
 }
 
 .glitch {

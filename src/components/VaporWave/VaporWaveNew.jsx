@@ -5,7 +5,6 @@ import "./VaporWave.css";
 import TitleSection from "./TitleSection";
 import VaporWaveScene from "./VaporWaveScene";
 import SkullScene from "./SkullScene";
-// import ModelLoader from "./ModelLoader";
 
 const VaporWaveNew = () => {
   const canvasRef = useRef(null);
@@ -16,7 +15,7 @@ const VaporWaveNew = () => {
 
   const [modelLoaded, setModelLoaded] = useState(false);
 
-  const handleGameStart = (scene) => {
+  const handleGameStart = () => {
     console.log("Game started!");
 
     const title = document.querySelector(".vapor-wave-bottom h1");
@@ -64,12 +63,9 @@ const VaporWaveNew = () => {
         rendererRef={rendererRef}
       />
       {modelLoaded && ( 
-        <>
-          <SkullScene 
-            canvasRef={skullCanvasRef}
-          />
-          <canvas ref={skullCanvasRef} className="skull-webgl" />;
-        </>
+        <SkullScene 
+          canvasRef={skullCanvasRef}
+        />
       )}
     </div>
   );

@@ -7,9 +7,9 @@ import { RGBShiftShader } from "three/examples/jsm/shaders/RGBShiftShader.js";
 import { GammaCorrectionShader } from "three/examples/jsm/shaders/GammaCorrectionShader.js";
 
 const TEXTURES = {
-    grid: "https://res.cloudinary.com/dg5nsedzw/image/upload/v1641657168/blog/vaporwave-threejs-textures/grid.png",
-    displacement: "https://res.cloudinary.com/dg5nsedzw/image/upload/v1641657200/blog/vaporwave-threejs-textures/displacement.png",
-    metalness: "https://res.cloudinary.com/dg5nsedzw/image/upload/v1641657200/blog/vaporwave-threejs-textures/metalness.png",
+    grid: "/textures/grid.png",
+    displacement: "/textures/displacement.png",
+    metalness: "/textures/metalness.png",
 };
 
 const VaporWaveScene = ({ canvasRef, sceneRef, cameraRef, rendererRef }) => {

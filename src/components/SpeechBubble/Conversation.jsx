@@ -6,7 +6,8 @@ const Conversation = ({
     textArray,
     speechBubbleRef,
     setShowMessage,
-    toggleExpand
+    toggleExpand,
+    afterClose
 }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isVisible, setIsVisible] = useState(true);
@@ -21,8 +22,9 @@ const Conversation = ({
             }, 100); // Short delay for smoother transition
         } else {            
             setIsVisible(false); // Hide speech bubble when reaching last string
-            setShowMessage(false); 
+            setShowMessage(false);             
             toggleExpand();
+            afterClose && afterClose();
         }
     };
 

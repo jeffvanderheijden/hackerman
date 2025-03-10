@@ -1,13 +1,20 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import Dialog from "./../Dialog/Dialog";
+import SkullHealthbar from "./SkullHealthbar";
+import imageSrc from "/images/skull.png";
+import doomHand from "/images/test.png";
 import * as THREE from "three";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
 import gsap from "gsap";
 
 const SkullScene = ({ canvasRef }) => {
+    const [doomHandVisible, setDoomHandVisible] = useState(false);
+    const [healthbarVisible, setHealthbarVisible] = useState(false);
+    const [currentDialog, setCurrentDialog] = useState(1);
+
     useEffect(() => {
         if (!canvasRef || !canvasRef.current) return;
 
-        // Create scene, camera, and renderer
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
         camera.position.set(0, 0.5, 1);
@@ -16,7 +23,6 @@ const SkullScene = ({ canvasRef }) => {
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-        // Lighting setup
         const hemiLight = new THREE.HemisphereLight("#ffffff", "#222222", 1.5);
         scene.add(hemiLight);
 
@@ -33,9 +39,43 @@ const SkullScene = ({ canvasRef }) => {
         const ambientLight = new THREE.AmbientLight("#444444", 1.0);
         scene.add(ambientLight);
 
-        // Load the OBJ model with animation
+        const fresnelShader = {
+            uniforms: {
+                color: { value: new THREE.Color(0x008F11) },
+                fresnelPower: { value: 2.5 },
+                fresnelScale: { value: 1.5 },
+                opacity: { value: 0 },
+            },
+            vertexShader: `
+                varying vec3 vNormal;
+                varying vec3 vViewDir;
+                void main() {
+                    vNormal = normalize(normalMatrix * normal);
+                    vec4 viewPosition = modelViewMatrix * vec4(position, 1.0);
+                    vViewDir = normalize(-viewPosition.xyz);
+                    gl_Position = projectionMatrix * viewPosition;
+                }
+            `,
+            fragmentShader: `
+                uniform vec3 color;
+                uniform float fresnelPower;
+                uniform float fresnelScale;
+                uniform float opacity;
+                varying vec3 vNormal;
+                varying vec3 vViewDir;
+                void main() {
+                    float fresnel = pow(1.0 - dot(vNormal, vViewDir), fresnelPower) * fresnelScale;
+                    gl_FragColor = vec4(color * fresnel, opacity);
+                }
+            `,
+            transparent: true,
+        };
+
         const loader = new OBJLoader();
         let skull;
+        let jaw = null;
+        let skullTop = null;
+
         loader.load(
             "/models/skull.obj",
             (obj) => {
@@ -43,22 +83,9 @@ const SkullScene = ({ canvasRef }) => {
                 obj.scale.set(0.01, 0.01, 0.01);
                 obj.position.set(0, 0.5, -2);
 
-                let jaw = null;
-                let skullTop = null;
-
                 obj.traverse((child) => {
                     if (child.isMesh) {
-                        child.material = new THREE.MeshStandardMaterial({
-                            color: "#00ff99",
-                            emissive: "#00aa55",
-                            emissiveIntensity: 0.2,
-                            roughness: 0.4,
-                            metalness: 0.8,
-                            transparent: true,
-                            opacity: 0,
-                            shading: THREE.FlatShading,
-                        });
-
+                        child.material = new THREE.ShaderMaterial(fresnelShader);
                         if (child.name.toLowerCase().includes("jaw")) {
                             jaw = child;
                         } else if (child.name.toLowerCase().includes("head")) {
@@ -66,163 +93,157 @@ const SkullScene = ({ canvasRef }) => {
                         }
                     }
                 });
-
+                
                 scene.add(obj);
-
                 gsap.to(obj.scale, { x: 0.08, y: 0.08, z: 0.08, duration: 1.2, delay: 1, ease: "power2.inOut" });
                 gsap.to(obj.position, {
-                    z: 0, duration: 1.2, delay: 1, ease: "power2.inOut",
+                    z: 0,
+                    duration: 1.2,
+                    delay: 1,
+                    ease: "power2.inOut",
                     onComplete: () => {
-                        gsap.to(particles.material, { opacity: 0.6, duration: 1, ease: "power2.out", delay: 2 });
-                        gsap.to(obj.scale, { x: 0.05, y: 0.05, z: 0.05, duration: 1.5, ease: "power2.out" });
-                        gsap.to(obj.position, { z: -0.5, duration: 1.5, ease: "power2.out" }); // Ensure it fades in only after the scream
-                        gsap.to(obj.scale, { x: 0.05, y: 0.05, z: 0.05, duration: 1.5, ease: "power2.out" });
-                        gsap.to(obj.position, { z: -0.5, duration: 1.5, ease: "power2.out" });
-                        gsap.to(obj.scale, { x: 0.05, y: 0.05, z: 0.05, duration: 1.5, ease: "power2.out" });
-                        gsap.to(obj.position, { z: -0.5, duration: 1.5, ease: "power2.out" });
-                        gsap.to(obj.scale, { x: 0.05, y: 0.05, z: 0.05, duration: 1.5, ease: "power2.out" });
-                        gsap.to(obj.position, { z: -0.5, duration: 1.5, ease: "power2.out" });
+                        gsap.to(obj.position, { z: -2, duration: 2, ease: "power2.inOut", onComplete: startIdleAnimation });
                     }
                 });
-
+                
                 obj.traverse((child) => {
-                    if (child.isMesh && child.material) {
-                        gsap.to(child.material, { opacity: 1, duration: 1.5, delay: 1, ease: "power2.out" });
+                    if (child.isMesh && child.material && child.material.uniforms.opacity) {
+                        gsap.to(child.material.uniforms.opacity, { value: 1, duration: 1.5, delay: 1, ease: "power2.out" });
                     }
                 });
-
+                
+                // Jaw animation
                 if (jaw) {
                     gsap.to(jaw.rotation, {
-                        x: 0.6, duration: 1.2, delay: 1, ease: "power2.inOut",
+                        x: 0.6,
+                        duration: 1.2,
+                        delay: 1,
+                        ease: "power2.inOut",
                         onComplete: () => {
                             gsap.to(jaw.rotation, { x: 0.1, duration: 1.5, repeat: -1, yoyo: true, ease: "power2.inOut" });
                         }
                     });
                 }
 
+                // Skull top animation
                 if (skullTop) {
                     gsap.to(skullTop.rotation, {
-                        x: "-=0.15", duration: 1.5, repeat: -1, yoyo: true, ease: "power2.inOut"
+                        x: "-=0.15",
+                        duration: 1.5,
+                        repeat: -1,
+                        yoyo: true,
+                        ease: "power2.inOut"
                     });
                 }
             }
         );
 
-        // Create a pixelated effect that closely follows the skull's shape
-        const particleGeometry = new THREE.BufferGeometry();
-        const particleCount = 1500;
-        const positions = new Float32Array(particleCount * 3);
-        const opacities = new Float32Array(particleCount);
+        // Idle Animation function
+        const startIdleAnimation = () => {
+            if (!skull) return;
 
-        for (let i = 0; i < particleCount; i++) {
-            const angle = Math.random() * Math.PI * 2;
-            const distance = Math.random() * 0.3 + 0.1;
-            positions[i * 3] = Math.cos(angle) * distance;
-            positions[i * 3 + 1] = (Math.random() - 0.5) * 0.6;
-            positions[i * 3 + 2] = Math.sin(angle) * distance;
-            opacities[i] = 0;
-        }
+            gsap.to(skull.position, {
+                y: "+=0.05",
+                duration: 2,
+                repeat: -1,
+                yoyo: true,
+                ease: "sine.inOut",
+            });
 
-        particleGeometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-        particleGeometry.setAttribute("alpha", new THREE.BufferAttribute(opacities, 1));
+            gsap.to(skull.rotation, {
+                x: "+=0.05",
+                y: "+=0.1",
+                duration: 3,
+                repeat: -1,
+                yoyo: true,
+                ease: "sine.inOut",
+            });
 
-        const particleMaterial = new THREE.PointsMaterial({
-            color: "#00ff99",
-            size: 0.015,
-            transparent: true,
-            opacity: 0.6
-        });
+            gsap.to(skull.scale, {
+                x: "+=0.005",
+                y: "+=0.005",
+                z: "+=0.005",
+                duration: 3.5,
+                repeat: -1,
+                yoyo: true,
+                ease: "sine.inOut",
+            });
 
-        const particles = new THREE.Points(particleGeometry, particleMaterial);
-        scene.add(particles);
-        particles.position.y -= 0.3; // Offset to prevent initial visible particles above the skull
-        particles.material.opacity = 0; // Ensure it starts invisible and doesn't appear above the model at first // Start fully invisible
-
-        const animateParticles = () => {
-            if (!skull) return; // Ensure the skull is loaded before updating particles
-            
-            const time = performance.now() * 0.0003; // Slower animation factor
-            const skullPosition = skull.position; // Skull's position reference
-            const skullRadius = 0.15; // Rough bounding sphere for collision detection
-        
-            for (let i = 0; i < particleCount; i++) {
-                const index = i * 3;
-        
-                // Particle position
-                const px = positions[index];
-                const py = positions[index + 1];
-                const pz = positions[index + 2];
-        
-                // Compute distance from the skull
-                const dx = px - skullPosition.x;
-                const dy = py - skullPosition.y;
-                const dz = pz - skullPosition.z;
-                const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
-        
-                // Check for collision with the skull
-                if (distance < skullRadius) {
-                    if (distance < skullRadius * 0.7) {
-                        // Reset if too deep inside the skull
-                        positions[index + 1] = skullPosition.y + (Math.random() * 0.3 - 0.15);
-                        const newAngle = Math.random() * Math.PI * 2;
-                        const newRadius = Math.pow(Math.random(), 0.6) * 0.3;
-                        positions[index] = skullPosition.x + Math.cos(newAngle) * newRadius;
-                        positions[index + 2] = skullPosition.z + Math.sin(newAngle) * newRadius;
-                        opacities[i] = Math.random() * 0.3 + 0.2; // Lower opacity range
-                        continue;
-                    } else {
-                        // Push particle outward to flow around skull
-                        const pushFactor = (skullRadius - distance) * 0.2; // Small push force
-                        positions[index] += dx * pushFactor;
-                        positions[index + 1] += dy * pushFactor;
-                        positions[index + 2] += dz * pushFactor;
-                    }
-                }
-        
-                // Slow upward movement
-                positions[index + 1] += 0.003 + Math.random() * 0.0015;
-        
-                // Keep the fire shape (wider at the base, narrow at top)
-                const heightFactor = (positions[index + 1] - skullPosition.y + 0.7) / 1.6;
-                const maxRadius = 0.3 * (1 - heightFactor);
-                const angle = time * 1.5 + i * 0.1;
-                
-                // Swirling motion
-                positions[index] += Math.sin(angle) * 0.0015 * (1 - heightFactor);
-                positions[index + 2] += Math.cos(angle) * 0.0015 * (1 - heightFactor);
-        
-                // Lower opacity and smoother flickering effect
-                opacities[i] -= 0.006 * (Math.random() * 0.5 + 0.5); // Slower fade-out
-                opacities[i] = Math.max(opacities[i], 0.1); // Ensure particles don't disappear too quickly
-        
-                // Maintain ember-like size but slow it down
-                particleMaterial.size = 0.018 + Math.sin(time * 2 + i) * 0.006;
-        
-                // Reset particle if it fades out or rises too high
-                if (positions[index + 1] > skullPosition.y + 1.0 || opacities[i] <= 0.1) {
-                    positions[index + 1] = skullPosition.y + (Math.random() * 0.3 - 0.15);
-                    const newAngle = Math.random() * Math.PI * 2;
-                    const newRadius = Math.pow(Math.random(), 0.6) * 0.3;
-                    positions[index] = skullPosition.x + Math.cos(newAngle) * newRadius;
-                    positions[index + 2] = skullPosition.z + Math.sin(newAngle) * newRadius;
-                    opacities[i] = Math.random() * 0.3 + 0.2; // Lower maximum opacity
-                }
+            if (jaw) {
+                gsap.to(jaw.rotation, {
+                    x: "+=0.02",
+                    duration: 2,
+                    repeat: -1,
+                    yoyo: true,
+                    ease: "power2.inOut",
+                });
             }
+        };
+
+        const onMouseMove = (event) => {
+            if (!skull) return;
+            const x = (event.clientX / window.innerWidth) * 2 - 1;
+            const y = -(event.clientY / window.innerHeight) * 2 + 1;
+            gsap.to(skull.rotation, { y: x * 0.5, x: -y * 0.2, duration: 0.5, ease: "power2.out" });
+        };
         
-            particleGeometry.attributes.position.needsUpdate = true;
-            particleGeometry.attributes.alpha.needsUpdate = true;
-        };        
+        window.addEventListener("mousemove", onMouseMove);
         
-        // Animation loop
         const animate = () => {
             requestAnimationFrame(animate);
-            animateParticles();
             renderer.render(scene, camera);
         };
         animate();
+        
+        return () => {
+            window.removeEventListener("mousemove", onMouseMove);
+        };
     }, [canvasRef]);
 
-    return null;
+    const closeDialog1 = () => {
+        setDoomHandVisible(true);
+        setCurrentDialog(2);
+    }
+
+    const closeDialog2 = () => {
+        setHealthbarVisible(true);
+        setCurrentDialog(3);
+    }
+
+    return (
+        <div className="skull-scene">
+            <div className="skull-scene-inner">
+                <canvas ref={canvasRef} className="skull-webgl" />
+                {currentDialog === 1 && (
+                    <Dialog
+                        name={"Ghost in the machine"}
+                        defaultOpen={true}
+                        imageSrc={imageSrc}
+                        conversation={["This digital highway isn't big enough for the both of us..."]}
+                        afterClose={closeDialog1}
+                    />
+                )}
+                {currentDialog === 2 && (
+                    <Dialog
+                        name={"Ghost in the machine"}
+                        defaultOpen={true}
+                        imageSrc={imageSrc}
+                        conversation={["Ehm.. hold up. Maybe we can talk about this?"]}
+                        afterClose={closeDialog2}
+                    />
+                )}
+
+                {doomHandVisible && (
+                    <div id="doom-hand">
+                        <img src={doomHand} />
+                    </div>
+                )}
+                {healthbarVisible && (
+                    <SkullHealthbar />
+                )}
+            </div>
+        </div>
+    );
 };
 
 export default SkullScene;

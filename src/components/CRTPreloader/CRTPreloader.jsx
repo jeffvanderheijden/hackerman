@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import Typewriter from "typewriter-effect";
 import "./CrtPreloader.css";
 
-import click1 from "./../../assets/key1.mp3";
-import click2 from "./../../assets/key2.mp3";
-import click3 from "./../../assets/key3.mp3";
-import click4 from "./../../assets/key4.mp3";
+import click1 from "/audio/key1.mp3";
+import click2 from "/audio/key2.mp3";
+import click3 from "/audio/key3.mp3";
+import click4 from "/audio/key4.mp3";
 
 const CrtPreloader = ({ onComplete }) => {
     const [logs, setLogs] = useState([]);

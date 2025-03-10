@@ -1,13 +1,14 @@
 import { useState, useEffect, useRef } from "react";
+import videoSrc from "/video/digiJeff.mp4";
 import "./App.css";
 
-import DigiJeff from "./components/DigiJeff/DigiJeff";
+import Dialog from "./components/Dialog/Dialog";
 import CRTScanline from "./components/CRTScanline/CRTScanline";
 import VaporWaveNew from "./components/VaporWave/VaporWaveNew";
 import MatrixOverlayNew from "./components/MatrixOverlay/MatrixOverlayNew";
 import CRTPreloader from "./components/CRTPreloader/CRTPreloader";
 
-import backgroundMusic from "./assets/background1.mp3"; // Add your MP3 file in assets folder
+import backgroundMusic from "/audio/background1.mp3"; 
 
 const App = () => {
   const [isLoaded, setIsLoaded] = useState(false); // Tracks if preloader has completed
@@ -41,8 +42,10 @@ const App = () => {
         <>
           <MatrixOverlayNew />
           <VaporWaveNew />
-          <DigiJeff 
+          <Dialog 
+            name="Jeff"
             entryMessage={"YO!"}
+            videoSrc={videoSrc}
             conversation={[
               "Welcome to the digital superhighway, dude! Name's Jeff.",
               "I'll be your rad navigator through this gnarly cyber world.",

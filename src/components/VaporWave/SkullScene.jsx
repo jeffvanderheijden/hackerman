@@ -212,6 +212,7 @@ const SkullScene = ({ canvasRef }) => {
 
     return (
         <div className="skull-scene">
+            <div className="skull-scene-overlay" />
             <div className="skull-scene-inner">
                 <canvas ref={canvasRef} className="skull-webgl" />
                 {currentDialog === 1 && (
@@ -235,7 +236,8 @@ const SkullScene = ({ canvasRef }) => {
 
                 {doomHandVisible && (
                     <div id="doom-hand">
-                        <img src={doomHand} />
+                        test
+                        {/* <img src={doomHand} /> */}
                     </div>
                 )}
                 {healthbarVisible && (

@@ -53,7 +53,7 @@ const App = () => {
             ]}
           />
           {/* Audio Element */}
-          <audio ref={audioRef} src={backgroundMusic} loop autoPlay />
+          {/* <audio ref={audioRef} src={backgroundMusic} loop autoPlay /> */}
         </>
       )}
       <CRTScanline />

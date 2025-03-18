@@ -16,8 +16,6 @@ const VaporWave = () => {
   const [modelLoaded, setModelLoaded] = useState(false);
 
   const handleGameStart = () => {
-    console.log("Game started!");
-
     const title = document.querySelector(".vapor-wave-bottom h1");
     const title2 = document.querySelector(".vapor-wave-bottom h2");
     const title3 = document.querySelector(".vapor-wave-bottom h3");

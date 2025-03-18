@@ -28,10 +28,9 @@ const CrtPreloader = ({ onComplete }) => {
 
     // Boot sequence messages with randomized delays
     const bootSequence = [
-        "Boot sequence initiated...",
-        "Loading system files...",
-        "Checking memory...",
-        "System ready."
+        "Accessing encrypted files...",
+        "User detected: Jeff van der Heijden",
+        "Profession: Technical Wizard | Code Alchemist | Educator of Digital Sorcery"
     ];
 
     useEffect(() => {
@@ -48,7 +47,7 @@ const CrtPreloader = ({ onComplete }) => {
                             setLoginMessageDisplayed(true);
                             setTimeout(() => setShowUsernameInput(true), 1500);
                             setStage("username");
-                        }, 2500);
+                        }, 5000);
                     }
                 }, delay);
                 delay += randomDelay;

@@ -1,11 +1,9 @@
 import { useState, useEffect, useRef } from "react";
-import videoSrc from "/video/digiJeff.mp4";
 import "./App.css";
 
-import Dialog from "./components/Dialog/Dialog";
 import CRTScanline from "./components/CRTScanline/CRTScanline";
-import VaporWaveNew from "./components/VaporWave/VaporWaveNew";
-import MatrixOverlayNew from "./components/MatrixOverlay/MatrixOverlayNew";
+import VaporWave from "./components/VaporWave/VaporWave";
+import MatrixOverlay from "./components/MatrixOverlay/MatrixOverlay";
 import CRTPreloader from "./components/CRTPreloader/CRTPreloader";
 
 import backgroundMusic from "/audio/background1.mp3"; 
@@ -40,18 +38,8 @@ const App = () => {
         <CRTPreloader onComplete={handlePreloaderComplete} />
       ) : (
         <>
-          <MatrixOverlayNew />
-          <VaporWaveNew />
-          <Dialog 
-            name="Jeff"
-            entryMessage={"YO!"}
-            videoSrc={videoSrc}
-            conversation={[
-              "Welcome to the digital superhighway, dude! Name's Jeff.",
-              "I'll be your rad navigator through this gnarly cyber world.",
-              "Smash that close button and let's blaze through this bodacious adventure!"
-            ]}
-          />
+          <MatrixOverlay />
+          <VaporWave />
           {/* Audio Element */}
           {/* <audio ref={audioRef} src={backgroundMusic} loop autoPlay /> */}
         </>

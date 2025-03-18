@@ -236,8 +236,7 @@ const SkullScene = ({ canvasRef }) => {
 
                 {doomHandVisible && (
                     <div id="doom-hand">
-                        test
-                        {/* <img src={doomHand} /> */}
+                        <img src={doomHand} />
                     </div>
                 )}
                 {healthbarVisible && (

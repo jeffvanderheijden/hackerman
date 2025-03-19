@@ -70,16 +70,16 @@ const EmailPopup = ({
 
                 <div className="button-group">
                     <PixelButton
-                        className={''}
                         onClick={() => setIsOpen(false)}
                         text="Close email"
                     />
                     <PixelButton
-                        className={''}
                         onClick={() => {
                             setIsOpen(false)
                             setEmailVisible(false)
-                            handleScroll()
+                            setTimeout(() => {
+                                handleScroll()
+                            }, 700)
                             setDialogVisible(false)
                         }}
                         text="Accept mission"

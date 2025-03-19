@@ -14,12 +14,12 @@ const Dialog = ({
     videoSrc,
     imageSrc,
     afterClose,
+    dialogRef = useRef(null),
 }) => {
     const [showMessage, setShowMessage] = useState(defaultOpen ? false : true);
     const [showEntryMessage, setShowEntryMessage] = useState(entryMessage ? true : false);
     const [isExpanded, setIsExpanded] = useState(false);
 
-    const dialogRef = useRef(null);
     const messageRef = useRef(null);
     const entryMessageRef = useRef(null);
     const speechBubbleRef = useRef(null); // Ref for the speech bubble

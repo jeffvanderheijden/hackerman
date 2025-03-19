@@ -9,9 +9,9 @@ import CRTPreloader from "./components/CRTPreloader/CRTPreloader";
 import backgroundMusic from "/audio/background1.mp3"; 
 
 const App = () => {
-  const [isLoaded, setIsLoaded] = useState(false); // Tracks if preloader has completed
-  const audioRef = useRef(null); // Reference for the audio element
-
+  const [isLoaded, setIsLoaded] = useState(false); 
+  const audioRef = useRef(null); 
+  
   useEffect(() => {
     // Check if the preloader has been completed before
     const isPreloaded = sessionStorage.getItem("isPreloaded");
@@ -40,7 +40,6 @@ const App = () => {
         <>
           <MatrixOverlay />
           <VaporWave />
-          {/* Audio Element */}
           {/* <audio ref={audioRef} src={backgroundMusic} loop autoPlay /> */}
         </>
       )}

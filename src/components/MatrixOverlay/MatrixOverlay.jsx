@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const MatrixOverlay = () => {
     const [emailVisible, setEmailVisible] = useState(false);
-    const [dialogVisible, setDialogVisible] = useState(true);
+    const [dialogVisible, setDialogVisible] = useState(false);
     const canvasRef = useRef(null);
     const initialLoadRef = useRef(true);
     const initialDurationRef = useRef(200);
@@ -102,6 +102,12 @@ const MatrixOverlay = () => {
         return () => {
             window.removeEventListener("scroll", onScroll);
         };
+    }, []);
+
+    useEffect(() => {
+        setTimeout((() => {
+            setDialogVisible(true);
+        }), 1000);
     }, []);
 
     const closeDialog = () => {

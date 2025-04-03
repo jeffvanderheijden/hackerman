@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Dialog from "./../Dialog/Dialog";
 import videoSrc from "/video/digiJeff.mp4"
+
 gsap.registerPlugin(ScrollTrigger);
 
 const TitleSection = ({ handleGameStart }) => {
@@ -34,6 +35,7 @@ const TitleSection = ({ handleGameStart }) => {
     }, []);
 
     useEffect(() => {
+        dialogRef && dialogRef.current &&
         gsap.fromTo(
             dialogRef.current,
             { opacity: 0 },

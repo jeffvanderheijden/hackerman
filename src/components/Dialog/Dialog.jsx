@@ -25,6 +25,7 @@ const Dialog = ({
     const speechBubbleRef = useRef(null); // Ref for the speech bubble
 
     useEffect(() => {
+        dialogRef && dialogRef.current && entryMessageRef && entryMessageRef.current && messageRef && messageRef.current &&
         gsap.set([dialogRef.current, entryMessageRef.current], { autoAlpha: 0, scale: 0.5, x: -100 });
         gsap.set(messageRef.current, { autoAlpha: 0, scale: 0.5 });
 
@@ -56,11 +57,11 @@ const Dialog = ({
                 ease: "elastic.out(1, 0.5)",
             });
         }, messageTimeout);
-    }, []);
+    }, []); // TODO: Should dependency array be empty here?
 
     // Animate the SpeechBubble when it appears
     useEffect(() => {
-        if (isExpanded && speechBubbleRef.current) {
+        if (isExpanded && speechBubbleRef && speechBubbleRef.current) {
             gsap.fromTo(
                 speechBubbleRef.current,
                 { autoAlpha: 0, x: -100, scale: 0.8 },
@@ -69,7 +70,7 @@ const Dialog = ({
         } else {
             gsap.to(speechBubbleRef.current, { autoAlpha: 0, scale: 0.8, duration: 0.5, ease: "power3.inOut", delay: 0.5 });
         }
-    }, [isExpanded]);
+    }, [isExpanded]); // isExpanded set here, other dependency arrays are empty?
 
     const animateMessage = (scale, rotate = 0) => {
         gsap.to(messageRef.current, {

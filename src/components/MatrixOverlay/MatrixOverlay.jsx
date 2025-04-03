@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import "./MatrixOverlay.css";
 import Dialog from "../Dialog/Dialog";
 import narratorImg from "/images/narrator.webp";
+import EmailWindow from "../EmailPopup/EmailWindow";
 import EmailPopup from "../EmailPopup/EmailPopup";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -161,8 +162,8 @@ const MatrixOverlay = () => {
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.5 }}
                     >
-                        <EmailPopup 
-                            setEmailVisible={setEmailVisible} 
+                        <EmailWindow
+                            setEmailVisible={setEmailVisible}
                             setDialogVisible={setDialogVisible}
                         />
                     </motion.div>

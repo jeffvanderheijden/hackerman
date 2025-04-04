@@ -1,13 +1,10 @@
 import gsap from "gsap";
 import { useState, useEffect, useRef } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Dialog from "./../Dialog/Dialog";
-import videoSrc from "/video/digiJeff.mp4"
 
 gsap.registerPlugin(ScrollTrigger);
 
 const TitleSection = ({ handleGameStart }) => {
-    const [dialogVisible, setDialogVisible] = useState(false);
     const dialogRef = useRef(null);
 
     useEffect(() => {
@@ -52,25 +49,13 @@ const TitleSection = ({ handleGameStart }) => {
         );
     }, []);
 
-    return (
-        <div className="vapor-wave-bottom">
-            <div className="vapor-wave-content">
-                <h1 className="glitch" data-text="CREATIVE DEVELOPER">CREATIVE DEVELOPER</h1>
-                <h1 className="glow">CREATIVE DEVELOPER</h1>
-                <h2>Jeff van der Heijden</h2>
-                <h3 className="kanji">狂ってるけど効果的</h3>
-                <button onClick={handleGameStart} className="start-button">Start</button>
-            </div>
-            {dialogVisible && (
-                <Dialog
-                    className={"jeff-intro-dialog"}
-                    name={"Jeff"}
-                    defaultOpen={true}
-                    videoSrc={videoSrc}
-                    conversation={["Yo!", "I'm Jeff, a creative developer."]}
-                    dialogRef={dialogRef}
-                />
-            )}
+    return (        
+        <div className="vapor-wave-content">
+            <h1 className="glitch" data-text="CREATIVE DEVELOPER">CREATIVE DEVELOPER</h1>
+            <h1 className="glow">CREATIVE DEVELOPER</h1>
+            <h2>Grafisch Lyceum Rotterdam</h2>
+            <h3 className="kanji">狂ってるけど効果的</h3>
+            <button onClick={handleGameStart} className="start-button">Start</button>
         </div>
     );
 };

@@ -1,6 +1,8 @@
 import { useRef, useState } from "react";
 import gsap from "gsap";
 import "./VaporWave.css";
+import Dialog from "./../Dialog/Dialog";
+import videoSrc from "/video/digiJeff.mp4"
 
 import TitleSection from "./TitleSection";
 import VaporWaveScene from "./VaporWaveScene";
@@ -12,8 +14,10 @@ const VaporWave = () => {
   const sceneRef = useRef(null);
   const cameraRef = useRef(null);
   const rendererRef = useRef(null);
+  const dialogRef = useRef(null);
 
   const [modelLoaded, setModelLoaded] = useState(false);
+  const [teacherLoaded, setTeacherLoaded] = useState(false);
 
   const handleGameStart = () => {
     const title = document.querySelector(".vapor-wave-bottom h1");
@@ -45,27 +49,44 @@ const VaporWave = () => {
         }, 1000);
       }
     });
-
-    setModelLoaded(true);
+    setTimeout(() => {
+      setTeacherLoaded(true);
+    }, 2000);
   };
+
+  const closeDialog = () => {
+    setModelLoaded(true);
+    setTeacherLoaded(false);
+  }
 
   return (
     <div className="vapor-wave">
-      <TitleSection 
-        handleGameStart={() => handleGameStart(sceneRef.current)} 
-      />
-      <VaporWaveScene 
-        canvasRef={canvasRef} 
-        sceneRef={sceneRef} 
+      <div className="vapor-wave-bottom">
+        <TitleSection
+          handleGameStart={() => handleGameStart(sceneRef.current)}
+        />
+        {teacherLoaded && (
+          <Dialog
+            className={"jeff-intro-dialog"}
+            name={"Jeff"}
+            defaultOpen={true}
+            videoSrc={videoSrc}
+            conversation={["Hey! Mijn naam is meneer van der Heijden.", "Ik ben één van je docenten dit jaar.", "Je eerste-...", "Oh nee! Een virus! Probeer het te stoppen voordat...---#458${}#458#-"]}
+            dialogRef={dialogRef}
+            afterClose={closeDialog}
+          />
+        )}
+      </div>
+      <VaporWaveScene
+        canvasRef={canvasRef}
+        sceneRef={sceneRef}
         cameraRef={cameraRef}
         rendererRef={rendererRef}
       />
-      {modelLoaded && ( 
-        <>
-          <SkullScene 
-            canvasRef={skullCanvasRef}
-          />
-        </>
+      {modelLoaded && (
+        <SkullScene
+          canvasRef={skullCanvasRef}
+        />
       )}
     </div>
   );

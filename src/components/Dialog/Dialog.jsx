@@ -70,7 +70,7 @@ const Dialog = ({
         } else {
             gsap.to(speechBubbleRef.current, { autoAlpha: 0, scale: 0.8, duration: 0.5, ease: "power3.inOut", delay: 0.5 });
         }
-    }, [isExpanded]); // isExpanded set here, other dependency arrays are empty?
+    }, [isExpanded]); 
 
     const animateMessage = (scale, rotate = 0) => {
         gsap.to(messageRef.current, {
@@ -84,7 +84,6 @@ const Dialog = ({
     const toggleExpand = () => {
         setIsExpanded((prev) => !prev);
 
-        // Hide message when expanding, show when shrinking
         gsap.to(messageRef.current, {
             autoAlpha: isExpanded ? 1 : 0,
             scale: isExpanded ? 1 : 0.5,

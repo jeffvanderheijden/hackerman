@@ -3,7 +3,6 @@ import "./MatrixOverlay.css";
 import Dialog from "../Dialog/Dialog";
 import narratorImg from "/images/narrator.webp";
 import EmailWindow from "../EmailPopup/EmailWindow";
-import EmailPopup from "../EmailPopup/EmailPopup";
 import { motion, AnimatePresence } from "framer-motion";
 
 const MatrixOverlay = () => {
@@ -15,7 +14,7 @@ const MatrixOverlay = () => {
     const dropsRef = useRef([]);
     const columnsRef = useRef(0);
     const characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZあいうえおカキクケコ";
-    const name = "Jeff van der Heijden".split("");
+    const name = " WELCOME ".split("");
     const startXRef = useRef(0);
     const middleRowRef = useRef(0);
 

@@ -13,21 +13,77 @@ const EmailWindow = ({
   const emails = [
     {
       id: 1,
-      sender: "boss@company.com",
-      subject: "Quarterly Report Due",
-      body: "Don't forget to submit your Q1 report by Friday.",
+      sender: "every@company.com",
+      subject: "You Blinked. Now You Owe Us Your Soul (and $29.99/month)",
+      body: `
+Hey there, Valuable Human Asset!
+
+We noticed you hovered over our ad for 0.7 seconds. That's basically a legally binding contract. Welcome to our Gold Elite Ultra-Plus Membership Plan™—it includes:
+
+- A monthly newsletter full of things you'll never read
+- Access to exclusive content that doesn't exist
+- A badge for your profile no one will see
+
+If you act now (and by now, we mean within the next 3 seconds), we'll throw in a digital high-five—absolutely free.
+
+Click below to confirm your eternal loyalty:
+
+👉 [I Submit Willingly]
+
+Hugs,
+The Monetization Elves`,
     },
     {
       id: 2,
-      sender: "friend@oldmail.com",
-      subject: "Road Trip!",
-      body: "Let's plan a road trip this summer!",
+      sender: "not_@_scam.com",
+      subject: "Your Banana Is Too Small 😱🍌",
+      body: `
+Hey you!
+
+Tired of your tiny pet banana being ignored by the fruit bowl elite?
+With Banana Boost™, your banana can grow 6 sizes in 3 days!*
+
+Benefits include:
+
+Instant potassium power 💪
+
+Banana ballet skills 🩰
+
+Slightly more respect from apples 🍏
+
+Click now before your banana gets jealous:
+👉 [Grow My Banana]
+
+Totally serious,
+Dr. Peely von Splits
+Chief Bananaologist
+
+*Not approved by any real scientists.
+      `,
     },
     {
       id: 3,
-      sender: "johndoe@anon.org",
-      subject: "READ ME!!!1!",
-      body: "HELP.",
+      sender: "toelating@glr.nl",
+      subject: "GEFELICITEERD! Je bent aangenomen!",
+      body: `
+Beste toekomstige wereldverbeteraar,
+
+Goed nieuws! Je bent officieel toegelaten tot het MBO Lyceum voor Ambitieuze Tot En Met Redelijk Wakkere Studenten.
+
+Op basis van je indrukwekkende motivatie ("mijn moeder zei dat ik moest") en je unieke talent om formulieren nét op tijd in te leveren, verwelkomen wij je met open armen, een stapel roosters en een printer die het nét niet doet.
+
+Wat kun je verwachten?
+
+- Koffie die smaakt naar opgewarmde twijfel
+- Docenten met mysterieuze bureauladen vol stressballen
+- En natuurlijk: vrijdagmiddag Excel-feestjes!
+
+Klik hieronder om je aanmelding te bevestigen en je eerste les in "Hoe Overleef Ik De Eerste Week" te starten.
+
+Tot snel in de aula!
+Met administratieve groet,
+Team Toelating & Toverkunst
+Grafisch Lyceum Rotterdam`,
     },
   ];
 
@@ -95,7 +151,9 @@ const EmailWindow = ({
               <>
                 <h3>{selectedEmail.subject}</h3>
                 <p><strong>From:</strong> {selectedEmail.sender}</p>
-                <p>{selectedEmail.body}</p>
+                {selectedEmail.body.split("\n").map((line, index) => (
+                  <p key={index}>{line}</p>
+                ))}
                 {selectedEmail.id === 3 && (
                   <div className="button-group">
                     <PixelButton

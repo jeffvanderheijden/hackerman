@@ -1,0 +1,40 @@
+.debug-container {
+    text-align: center;
+    color: #00ff00;
+}
+
+.game-area {
+    position: relative;
+    height: 90vh;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.code-line {
+    position: absolute;
+    color: red;
+    font-size: 18px;
+    cursor: pointer;
+    user-select: none;
+    animation: flicker 0.2s infinite;
+}
+
+@keyframes flicker {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.6;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.status-text {
+    margin-top: 10px;
+    font-size: 20px;
+    color: #00ff00;
+}

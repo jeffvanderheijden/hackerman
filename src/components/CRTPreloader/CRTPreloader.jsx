@@ -29,8 +29,8 @@ const CrtPreloader = ({ onComplete }) => {
     // Boot sequence messages with randomized delays
     const bootSequence = [
         "Accessing encrypted files...",
-        "User detected: Jeff van der Heijden",
-        "Profession: Technical Wizard | Code Alchemist | Educator of Digital Sorcery"
+        "New user detected...",
+        "Initializing new student experience...",
     ];
 
     useEffect(() => {

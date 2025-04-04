@@ -126,4 +126,15 @@
   padding: 10px;
   background-color: #ffffff;
   overflow-y: auto;
+  max-height: 448px;
+  overflow: scroll;
+}
+
+.emailContent h3 {
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.emailContent p {
+  margin-bottom: 18px;;
 }

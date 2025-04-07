@@ -35,9 +35,7 @@ const EmailAppIcon = ({
         <>
             {showIcon && (
                 <div className="email-icon" ref={emailRef} onClick={onClick}>
-                    <div className="icon">
-                        <Email />
-                    </div>
+                    <img src="/images/email.png" alt="Email Icon" />
                     <div className="badge" ref={badgeRef}>1</div>
                 </div>
             )}

@@ -23,7 +23,7 @@ const DebugTheVirus = () => {
     useEffect(() => {
         if (timeLeft <= 0) {
             if (score < TOTAL_BUGS) {
-                setGameStatus("💀 SYSTEM FAILURE. VIRUS TOOK OVER!");
+                setGameStatus("SYSTEM FAILURE. VIRUS TOOK OVER!");
                 setBugs([]);
             }
             return;
@@ -36,14 +36,22 @@ const DebugTheVirus = () => {
 
     useEffect(() => {
         if (score >= TOTAL_BUGS) {
-            setGameStatus("✅ SYSTEM CLEANED. VIRUS DEFEATED!");
+            setGameStatus("SYSTEM CLEANED. VIRUS DEFEATED!");
         }
     }, [score]);
 
     const handleClick = (id) => {
-        setBugs(prev => prev.filter(b => b.id !== id));
+        setBugs(prev =>
+            prev.map(bug =>
+                bug.id === id ? { ...bug, shattered: true } : bug
+            )
+        );
+        setTimeout(() => {
+            setBugs(prev => prev.filter(b => b.id !== id));
+        }, 600); // tijd voor animatie
         setScore(prev => prev + 1);
     };
+
 
     return (
         <div className="debug-container">
@@ -51,12 +59,13 @@ const DebugTheVirus = () => {
                 {bugs.map(bug => (
                     <div
                         key={bug.id}
-                        className="code-line"
+                        className={`code-line ${bug.shattered ? "shatter" : ""}`}
                         style={{ top: bug.top, left: bug.left }}
                         onClick={() => handleClick(bug.id)}
                     >
                         {bug.error}
                     </div>
+
                 ))}
             </div>
             <div className="status-text">

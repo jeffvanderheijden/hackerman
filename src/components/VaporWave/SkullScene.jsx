@@ -287,10 +287,12 @@ const SkullScene = ({ canvasRef }) => {
                 setCurrentDialog(1);
             }, 3000);
         }
-    }, [currentDialog]);
+    }, []);
 
     const startGame = () => {
         setGameStarted(true);
+        setCurrentDialog(0);
+        setHealthbarVisible(true);
     }
 
     return (
@@ -300,10 +302,10 @@ const SkullScene = ({ canvasRef }) => {
                 <canvas ref={canvasRef} className="skull-webgl" />
                 {currentDialog === 1 && (
                     <Dialog
-                        name={"Ghost in the machine"}
+                        name={"Bug"}
                         defaultOpen={true}
                         imageSrc={imageSrc}
-                        conversation={["This digital highway isn't big enough for the both of us..."]}
+                        conversation={["Blargh! Ik ben een 'bug'! Ik ben hier om je systeem te verstoren!"]}
                         afterClose={startGame}
                     />
                 )}

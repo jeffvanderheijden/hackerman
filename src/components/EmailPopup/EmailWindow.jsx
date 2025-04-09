@@ -13,25 +13,27 @@ const EmailWindow = ({
   const emails = [
     {
       id: 1,
-      sender: "every@company.com",
-      subject: "You Blinked. Now You Owe Us Your Soul (and $29.99/month)",
+      sender: "toelating@glr.nl",
+      subject: "GEFELICITEERD! Je bent aangenomen!",
       body: `
-Hey there, Valuable Human Asset!
+Beste toekomstige wereldverbeteraar,
 
-We noticed you hovered over our ad for 0.7 seconds. That's basically a legally binding contract. Welcome to our Gold Elite Ultra-Plus Membership Plan™—it includes:
+Goed nieuws! Je bent officieel toegelaten tot het MBO Lyceum voor Ambitieuze Tot En Met Redelijk Wakkere Studenten.
 
-- A monthly newsletter full of things you'll never read
-- Access to exclusive content that doesn't exist
-- A badge for your profile no one will see
+Op basis van je indrukwekkende motivatie ("mijn moeder zei dat ik moest") en je unieke talent om formulieren nét op tijd in te leveren, verwelkomen wij je met open armen, een stapel roosters en een printer die het nét niet doet.
 
-If you act now (and by now, we mean within the next 3 seconds), we'll throw in a digital high-five—absolutely free.
+Wat kun je verwachten?
 
-Click below to confirm your eternal loyalty:
+- Koffie die smaakt naar opgewarmde twijfel
+- Docenten met mysterieuze bureauladen vol stressballen
+- En natuurlijk: vrijdagmiddag Excel-feestjes!
 
-👉 [I Submit Willingly]
+Klik hieronder om je aanmelding te bevestigen en je eerste les in "Hoe Overleef Ik De Eerste Week" te starten.
 
-Hugs,
-The Monetization Elves`,
+Tot snel in de aula!
+Met administratieve groet,
+Team Toelating & Toverkunst
+Grafisch Lyceum Rotterdam`,
     },
     {
       id: 2,
@@ -63,27 +65,25 @@ Chief Bananaologist
     },
     {
       id: 3,
-      sender: "toelating@glr.nl",
-      subject: "GEFELICITEERD! Je bent aangenomen!",
+      sender: "every@company.com",
+      subject: "You Blinked. Now You Owe Us Your Soul (and $29.99/month)",
       body: `
-Beste toekomstige wereldverbeteraar,
+Hey there, Valuable Human Asset!
 
-Goed nieuws! Je bent officieel toegelaten tot het MBO Lyceum voor Ambitieuze Tot En Met Redelijk Wakkere Studenten.
+We noticed you hovered over our ad for 0.7 seconds. That's basically a legally binding contract. Welcome to our Gold Elite Ultra-Plus Membership Plan™—it includes:
 
-Op basis van je indrukwekkende motivatie ("mijn moeder zei dat ik moest") en je unieke talent om formulieren nét op tijd in te leveren, verwelkomen wij je met open armen, een stapel roosters en een printer die het nét niet doet.
+- A monthly newsletter full of things you'll never read
+- Access to exclusive content that doesn't exist
+- A badge for your profile no one will see
 
-Wat kun je verwachten?
+If you act now (and by now, we mean within the next 3 seconds), we'll throw in a digital high-five—absolutely free.
 
-- Koffie die smaakt naar opgewarmde twijfel
-- Docenten met mysterieuze bureauladen vol stressballen
-- En natuurlijk: vrijdagmiddag Excel-feestjes!
+Click below to confirm your eternal loyalty:
 
-Klik hieronder om je aanmelding te bevestigen en je eerste les in "Hoe Overleef Ik De Eerste Week" te starten.
+👉 [I Submit Willingly]
 
-Tot snel in de aula!
-Met administratieve groet,
-Team Toelating & Toverkunst
-Grafisch Lyceum Rotterdam`,
+Hugs,
+The Monetization Elves`,
     },
   ];
 
@@ -154,7 +154,7 @@ Grafisch Lyceum Rotterdam`,
                 {selectedEmail.body.split("\n").map((line, index) => (
                   <p key={index}>{line}</p>
                 ))}
-                {selectedEmail.id === 3 && (
+                {selectedEmail.id === 1 && (
                   <div className="button-group">
                     <PixelButton
                       onClick={() => setIsOpen(false)}

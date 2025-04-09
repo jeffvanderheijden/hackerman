@@ -88,8 +88,8 @@ The Monetization Elves`,
   ];
 
   const handleScroll = () => {
-    const totalDistance = window.innerHeight * 2; // 200vh
-    const duration = 2000; // Increase duration for a slower effect (2000ms = 2 seconds)
+    const totalDistance = window.innerHeight * 2;
+    const duration = 2000; 
     let startTime = null;
     let initialPosition = window.scrollY;
 

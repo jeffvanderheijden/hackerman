@@ -6,7 +6,7 @@ import Conversation from "../SpeechBubble/Conversation";
 
 const Dialog = ({
     name = "ENTER NAME OF CHARACTER PROP",
-    conversation = ["ENTER CONVERSATION PROP"],
+    conversation = [{text: "ENTER CONVERSATION PROP"}],
     entryMessage,
     entryMessageTimeout = 2000,
     messageTimeout = 3000,

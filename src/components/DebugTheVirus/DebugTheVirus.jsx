@@ -4,7 +4,10 @@ import "./DebugTheVirus.css";
 
 const TOTAL_BUGS = 10;
 
-const DebugTheVirus = () => {
+const DebugTheVirus = ({
+    setWarningLoaded,
+    setGameStarted
+}) => {
     const [bugs, setBugs] = useState([]);
     const [score, setScore] = useState(0);
     const [timeLeft, setTimeLeft] = useState(20);
@@ -23,7 +26,6 @@ const DebugTheVirus = () => {
     useEffect(() => {
         if (timeLeft <= 0) {
             if (score < TOTAL_BUGS) {
-                setGameStatus("SYSTEM FAILURE. VIRUS TOOK OVER!");
                 setBugs([]);
             }
             return;
@@ -36,7 +38,8 @@ const DebugTheVirus = () => {
 
     useEffect(() => {
         if (score >= TOTAL_BUGS) {
-            setGameStatus("SYSTEM CLEANED. VIRUS DEFEATED!");
+            setWarningLoaded(false);
+            setGameStarted(false);
         }
     }, [score]);
 
@@ -48,7 +51,7 @@ const DebugTheVirus = () => {
         );
         setTimeout(() => {
             setBugs(prev => prev.filter(b => b.id !== id));
-        }, 600); // tijd voor animatie
+        }, 600); 
         setScore(prev => prev + 1);
     };
 
@@ -65,7 +68,6 @@ const DebugTheVirus = () => {
                     >
                         {bug.error}
                     </div>
-
                 ))}
             </div>
             <div className="status-text">

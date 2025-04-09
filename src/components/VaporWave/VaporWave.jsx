@@ -1,9 +1,11 @@
 import { useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import gsap from "gsap";
 import "./VaporWave.css";
-import Dialog from "./../Dialog/Dialog";
 import videoSrc from "/video/digiJeff.mp4"
 
+import Dialog from "./../Dialog/Dialog";
+import VirusWarning from "./../DebugTheVirus/VirusWarning";
 import TitleSection from "./TitleSection";
 import VaporWaveScene from "./VaporWaveScene";
 import SkullScene from "./SkullScene";
@@ -18,6 +20,7 @@ const VaporWave = () => {
 
   const [modelLoaded, setModelLoaded] = useState(false);
   const [teacherLoaded, setTeacherLoaded] = useState(false);
+  const [warningLoaded, setWarningLoaded] = useState(false);
 
   const handleGameStart = () => {
     const title = document.querySelector(".vapor-wave-bottom h1");
@@ -54,7 +57,11 @@ const VaporWave = () => {
     }, 2000);
   };
 
-  const closeDialog = () => {
+  const closeDialog1 = () => {
+    setWarningLoaded(true);
+  }
+
+  const closeDialog2 = () => {
     setModelLoaded(true);
     setTeacherLoaded(false);
   }
@@ -71,9 +78,14 @@ const VaporWave = () => {
             name={"Jeff"}
             defaultOpen={true}
             videoSrc={videoSrc}
-            conversation={["Hey! Mijn naam is meneer van der Heijden.", "Ik ben één van je docenten dit jaar.", "Je eerste-...", "Oh nee! Een virus! Probeer het te stoppen voordat...---#458${}#458#-"]}
+            conversation={[
+              {text: "Hey! Mijn naam is meneer van der Heijden."}, 
+              {text: "Ik ben één van je docenten dit jaar."}, 
+              {text: "Je eerste-..."},
+              {text: "Oh nee, een bug! Versla hem snel voordat--- @#{error: #002}", method: closeDialog1},
+            ]}
             dialogRef={dialogRef}
-            afterClose={closeDialog}
+            afterClose={closeDialog2}
           />
         )}
       </div>
@@ -83,9 +95,22 @@ const VaporWave = () => {
         cameraRef={cameraRef}
         rendererRef={rendererRef}
       />
+      <AnimatePresence>
+        {warningLoaded && (
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+            >
+              <VirusWarning />
+            </motion.div>
+        )}
+      </AnimatePresence>
       {modelLoaded && (
         <SkullScene
           canvasRef={skullCanvasRef}
+          setWarningLoaded={setWarningLoaded}
         />
       )}
     </div>

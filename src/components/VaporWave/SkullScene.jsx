@@ -7,7 +7,10 @@ import * as THREE from "three";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
 import gsap from "gsap";
 
-const SkullScene = ({ canvasRef }) => {
+const SkullScene = ({ 
+    canvasRef,
+    setWarningLoaded
+}) => {
     const [healthbarVisible, setHealthbarVisible] = useState(false);
     const [currentDialog, setCurrentDialog] = useState(0);
     const [gameStarted, setGameStarted] = useState(false);
@@ -204,8 +207,7 @@ const SkullScene = ({ canvasRef }) => {
                     });
                 }
             }
-        );
-                            
+        );              
 
         // Idle Animation function
         const startIdleAnimation = () => {
@@ -305,15 +307,20 @@ const SkullScene = ({ canvasRef }) => {
                         name={"Bug"}
                         defaultOpen={true}
                         imageSrc={imageSrc}
-                        conversation={["Blargh! Ik ben een 'bug'! Ik ben hier om je systeem te verstoren!"]}
+                        conversation={[{
+                            text: "Blargh! Ik ben een 'bug'! Ik ben hier om je systeem te verstoren!"} 
+                        ]}
                         afterClose={startGame}
                     />
                 )}
-                {healthbarVisible && (
+                {/* {healthbarVisible && (
                     <SkullHealthbar />
-                )}
+                )} */}
                 {gameStarted && (
-                    <DebugTheVirus />
+                    <DebugTheVirus 
+                        setWarningLoaded={setWarningLoaded} 
+                        setGameStarted={setGameStarted}
+                    />
                 )}
             </div>
         </div>

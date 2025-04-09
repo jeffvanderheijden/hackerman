@@ -78,9 +78,8 @@ const MatrixOverlay = () => {
     useEffect(() => {
         resizeCanvas();
         animate();
-
         window.addEventListener("resize", resizeCanvas);
-
+        
         return () => {
             window.removeEventListener("resize", resizeCanvas);
         };
@@ -90,8 +89,8 @@ const MatrixOverlay = () => {
         const overlay = canvasRef.current;
         const onScroll = () => {
             const scrollFactor = window.scrollY / window.innerHeight;
-            const scaleValue = 1 + scrollFactor * 2.0; // More aggressive scaling
-            const opacity = Math.max(0.4 - scrollFactor * 0.6, 0); // More aggressive opacity fade
+            const scaleValue = 1 + scrollFactor * 2.0; 
+            const opacity = Math.max(0.4 - scrollFactor * 0.6, 0); 
             overlay.style.transform = `scale(${scaleValue})`;
             overlay.style.transformOrigin = "center top";
             overlay.style.opacity = opacity;
@@ -145,9 +144,9 @@ const MatrixOverlay = () => {
                             imageSrc={narratorImg}
                             afterClose={closeDialog}
                             conversation={[
-                                "You sit in your dimly lit CodeCave™, bathed in the neon glow of CRT monitors.",
-                                "The sound of dial-up internet screeches through the air.",
-                                "A mysterious email appears on your screen."
+                                {text: "You sit in your dimly lit CodeCave™, bathed in the neon glow of CRT monitors."},
+                                {text: "The sound of dial-up internet screeches through the air."},
+                                {text: "A mysterious email appears on your screen."}
                             ]}
                         />
                     </motion.div>

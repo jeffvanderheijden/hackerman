@@ -30,7 +30,9 @@ const HUD = ({ interaction, onSelect, selectedOptions }) => {
 
     // Reset input when interaction changes
     useEffect(() => {
-        setInput("");
+        if (interaction?.type !== 'input') {
+            setInput("");
+        }
     }, [interaction]);
 
     // Auto-focus the input field

@@ -1,9 +1,9 @@
 function validateNameInput(input) {
   return {
-    line: (vars) => `Nice to meet you, ${input}.`,
-    options: ["Continue"],
-    set: { playerName: input, metByte: true }, // ✅ store name & flag
-    next: { "Continue": "greetingAgain" }
+    line: (vars) => `Nice. We'll store "${input}" in a variable.`,
+    options: ["OK"],
+    set: { playerName: input, metByte: true },
+    next: { "OK": "quickIntro" }
   };
 }
 
@@ -11,33 +11,79 @@ const dialogue = {
   greeting: {
     line: (vars) =>
       vars.metByte
-        ? `Hello again, ${vars.playerName || 'stranger'}.`
-        : "Hello, human.",
-    options: ["Who are you?", "Where am I?", "Bye."],
+        ? `Back again, ${vars.playerName}?`
+        : "Hey. You must be the new one.",
+    options: (vars) => {
+      const opts = [];
+      if (!vars.metByte) {
+        opts.push("Who are you?");
+      } else {
+        opts.push("Can you explain variables again?");
+      }
+      return opts;
+    },
     next: {
       "Who are you?": "who",
-      "Where am I?": null,
-      "Bye.": null
+      "Can you explain variables again?": "quickIntro"
     }
   },
+
   who: {
-    line: "I'm Byte. Who are you?",
-    options: ["I don't remember my name.."],
+    line: "I'm Byte. What's your name?",
+    options: ["I don't remember my name."],
     next: {
-      "I don't remember my name..": "more"
+      "I don't remember my name.": "nameInput"
     }
   },
-  more: {
-    line: "No name, huh? Fine, we'll store one for you. In code, we use a variable. It's like a labeled box where we keep stuff.",
+
+  nameInput: {
+    line: "No problem. In code, we use variables to remember stuff. What would you like to be called?",
     type: "input",
     validate: validateNameInput
   },
-  greetingAgain: {
-    line: (vars) => `Ready to continue, ${vars.playerName || 'stranger'}?`,
-    options: ["Yes", "Not yet"],
+
+  quickIntro: {
+    line: (vars) =>
+      `A variable is like a labeled box in your code — it stores information you want to use later. For example:
+
+let name = "${vars.playerName || 'you'}";
+
+This saves your name in a box called “name”. Later on, if you write:
+
+console.log(name);
+
+It will show what’s inside the box: "${vars.playerName || 'you'}"`,
+    options: ["Got it"],
     next: {
-      "Yes": null,
-      "Not yet": null
+      "Got it": "wrapUp"
+    }
+  },
+
+  wrapUp: {
+    line: "You’ve just used your first variable. Easy, right?",
+    options: ["Yep!", "I want even more info"],
+    next: {
+      "Yep!": "bugWarning",
+      "I want even more info": "variableMoreInfo"
+    }
+  },
+
+  variableMoreInfo: {
+    line: "Here’s a cool video that explains variables even more. Opening it now...",
+    options: ["Continue"],
+    next: {
+      "Continue": "bugWarning"
+    },
+    effect: () => {
+      window.open("https://www.youtube.com/watch?v=ghCbURMWBD8", "_blank");
+    }
+  },
+
+  bugWarning: {
+    line: "Oh and watch out for bugs. Annoying little things.",
+    options: ["Understood."],
+    next: {
+      "Understood.": null
     }
   }
 };

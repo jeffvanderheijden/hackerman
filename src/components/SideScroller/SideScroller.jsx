@@ -41,6 +41,19 @@ function SideScroller() {
         selectedOptions,
     } = useDialogue();
 
+    const resolvedInteraction = interaction
+        ? {
+            ...interaction,
+            line: typeof interaction.line === 'function'
+                ? interaction.line(variables)
+                : interaction.line,
+            options: typeof interaction.options === 'function'
+                ? interaction.options(variables)
+                : interaction.options
+        }
+        : defaultInteraction;
+
+
     const {
         pos,
         isMoving,
@@ -93,7 +106,7 @@ function SideScroller() {
                         y={0}
                         size={TILE_SIZE}
                         playerX={pos.x}
-                        playerY={pos.y}                        
+                        playerY={pos.y}
                         onCollide={() => {
                             const now = Date.now();
                             if (!isInvincible && now - lastHitTime > 1000) {
@@ -119,7 +132,7 @@ function SideScroller() {
             </div>
 
             <HUD
-                interaction={interaction || defaultInteraction}
+                interaction={resolvedInteraction}
                 onSelect={handleSelect}
                 variables={variables}
                 selectedOptions={selectedOptions}

@@ -23,7 +23,7 @@ const Bug = ({ x, y, size, playerX, playerY, onCollide }) => {
     }, [x, size, direction]);
 
     useEffect(() => {
-        const distanceX = Math.abs(position + size * 0.25 - playerX);
+        const distanceX = Math.abs(position + size * 0.25 - size * 0.2 - playerX);
         const distanceY = Math.abs(playerY - (y + size * 0.25));
         const hitboxSize = size * 0.5;
         if (distanceX < hitboxSize && distanceY < hitboxSize) {

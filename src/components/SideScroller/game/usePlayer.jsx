@@ -16,5 +16,5 @@ export default function usePlayer(numTiles) {
     const isJumping = pos.y > 0;
     const isMovingLeft = keys.current.left && !keys.current.right;
 
-    return { pos, posRef, velRef, keys, isMoving, isJumping, isMovingLeft };
+    return { pos, posRef, velRef, keys, isMoving, isJumping, isMovingLeft, setPos};
 }

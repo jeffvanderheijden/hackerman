@@ -91,13 +91,13 @@ const HUD = ({ interaction, onSelect, selectedOptions }) => {
 
 const styles = {
     terminal: {
-        width: 'calc(50% - 20px)',
+        width: 'calc(40% - 20px)',
+        height: '200px',
         background: '#000',
         color: '#00FF00',
         fontFamily: 'monospace',
         padding: '10px',
         fontSize: '14px',
-        borderTop: '2px solid #00FF00',
         zIndex: 10,
     },
     output: {

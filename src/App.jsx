@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 
 import CRTScanline from "./components/CRTScanline/CRTScanline";
@@ -7,12 +7,15 @@ import MatrixOverlay from "./components/MatrixOverlay/MatrixOverlay";
 import CRTPreloader from "./components/CRTPreloader/CRTPreloader";
 import SideScroller from "./components/SideScroller/SideScroller";
 
-// Uncomment the line below to use a background music file
-// import backgroundMusic from "/audio/background1.mp3"; 
-
 const App = () => {
+  useEffect(() => {
+    // This runs after the DOM is fully rendered
+    requestAnimationFrame(() => {
+      window.scrollTo(0, 0);
+    });
+  }, []);
+
   const [isLoaded, setIsLoaded] = useState(false); 
-  const audioRef = useRef(null); 
   
   useEffect(() => {
     // Check if the preloader has been completed before
@@ -23,29 +26,31 @@ const App = () => {
     }
   }, []);
 
-  useEffect(() => {
-    if (isLoaded && audioRef.current) {
-      audioRef.current.play().catch((error) => console.log("Audio autoplay prevented:", error));
-    }
-  }, [isLoaded]);
-
   const handlePreloaderComplete = () => {
     sessionStorage.setItem("isPreloaded", "true"); // Save state so preloader doesn't show again
     setIsLoaded(true);
   };
 
   return (
+    // <>
+    //   {!isLoaded ? (
+    //     <CRTPreloader onComplete={handlePreloaderComplete} />
+    //   ) : (
+    //     <>
+    //       <MatrixOverlay />
+    //       <VaporWave />
+    //       <SideScroller />
+    //     </>
+    //   )}
+    //   <CRTScanline />
+    // </>
+
     <>
-      {!isLoaded ? (
-        <CRTPreloader onComplete={handlePreloaderComplete} />
-      ) : (
-        <>
-          {/* <MatrixOverlay />
-          <VaporWave /> */}
-          <SideScroller />
-          {/* <audio ref={audioRef} src={backgroundMusic} loop autoPlay /> */}
-        </>
-      )}
+      <>
+        {/* <MatrixOverlay />
+        <VaporWave /> */}
+        <SideScroller />
+      </>
       <CRTScanline />
     </>
   );

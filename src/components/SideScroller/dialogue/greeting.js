@@ -1,6 +1,6 @@
 function validateNameInput(input) {
   return {
-    line: (vars) => `Nice. We'll store "${input}" in a variable.`,
+    line: () => `Nice. We'll store "${input}" in a variable.`,
     options: ["OK"],
     set: { playerName: input, metByte: true },
     next: { "OK": "quickIntro" }
@@ -12,7 +12,7 @@ const dialogue = {
     line: (vars) =>
       vars.metByte
         ? `Back again, ${vars.playerName}?`
-        : "Hey. You must be the new one.",
+        : "Hey. You must be the new student.",
     options: (vars) => {
       const opts = [];
       if (!vars.metByte) {
@@ -43,8 +43,7 @@ const dialogue = {
   },
 
   quickIntro: {
-    line: (vars) =>
-      `A variable is like a labeled box in your code — it stores information you want to use later. For example:
+    line: (vars) => `A variable is like a labeled box in your code — it stores information you want to use later. For example:
 
 let name = "${vars.playerName || 'you'}";
 
@@ -60,7 +59,7 @@ It will show what’s inside the box: "${vars.playerName || 'you'}"`,
   },
 
   wrapUp: {
-    line: "You’ve just used your first variable. Easy, right?",
+    line: (vars) => `You've just used ${vars.metByte ? 'a' : 'your first'} variable. Easy, right?`,
     options: ["Yep!", "I want even more info"],
     next: {
       "Yep!": "bugWarning",
@@ -69,7 +68,7 @@ It will show what’s inside the box: "${vars.playerName || 'you'}"`,
   },
 
   variableMoreInfo: {
-    line: "Here’s a cool video that explains variables even more. Opening it now...",
+    line: "Here's a cool video that explains variables even more. Opening it now...",
     options: ["Continue"],
     next: {
       "Continue": "bugWarning"

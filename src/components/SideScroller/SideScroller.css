@@ -1,8 +1,18 @@
+.sideScroller {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column
+}
+
 .sideScrollerContainer {
     position: relative;
     background-color: black;
     height: 320px;
-    width: 50%;
+    width: 40%;
     padding-bottom: var(--hud-height);
     display: flex;
     flex-direction: column;
@@ -18,6 +28,17 @@
 
 .ground {
     display: flex;
+}
+
+.fade-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: black;
+    z-index: 999;
+    pointer-events: none;
 }
 
 @keyframes flash {

@@ -9,7 +9,7 @@ export default function useControls(keys, velRef, posRef) {
             } else if (e.code === "ArrowRight") {
                 keys.current.right = true;
                 velRef.current.x = 2;
-            } else if (e.code === "ArrowUp" || e.code === "Space") {
+            } else if (e.code === "Space") {
                 if (posRef.current.y === 0) {
                     velRef.current.y = 10;
                 }

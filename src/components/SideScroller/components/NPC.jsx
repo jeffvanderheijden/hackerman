@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 
 const FRAME_COUNT = 3;
 const ANIMATION_SPEED = 200; // ms per frame
-const SPEECH_TEXT = "Hello, human.";
 
-const NPC = ({ x, y, size, offset, onInteract, playerX }) => {
+const NPC = ({ x, y, size, onInteract, playerX, playerName }) => {
+  const SPEECH_TEXT = `Hello, ${playerName || "human"}.`;
+
   const [frame, setFrame] = useState(0);
   const [isNearby, setIsNearby] = useState(false);
   const [showBubble, setShowBubble] = useState(false);

@@ -6,3 +6,4 @@ export const GRAVITY = 0.5;
 export const HUD_HEIGHT = 80;
 
 export const npcPosition = { x: 10, y: 0 };
+export const npc2Position = { x: 30, y: 0 };

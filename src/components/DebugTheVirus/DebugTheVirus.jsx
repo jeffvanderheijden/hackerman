@@ -6,7 +6,8 @@ const TOTAL_BUGS = 10;
 
 const DebugTheVirus = ({
     setWarningLoaded,
-    setGameStarted
+    setGameStarted,
+    setCurrentDialog
 }) => {
     const [bugs, setBugs] = useState([]);
     const [score, setScore] = useState(0);
@@ -40,6 +41,7 @@ const DebugTheVirus = ({
         if (score >= TOTAL_BUGS) {
             setWarningLoaded(false);
             setGameStarted(false);
+            setCurrentDialog(2);
         }
     }, [score]);
 

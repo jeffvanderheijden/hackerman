@@ -5,8 +5,10 @@ import CRTScanline from "./components/CRTScanline/CRTScanline";
 import VaporWave from "./components/VaporWave/VaporWave";
 import MatrixOverlay from "./components/MatrixOverlay/MatrixOverlay";
 import CRTPreloader from "./components/CRTPreloader/CRTPreloader";
+import SideScroller from "./components/SideScroller/SideScroller";
 
-import backgroundMusic from "/audio/background1.mp3"; 
+// Uncomment the line below to use a background music file
+// import backgroundMusic from "/audio/background1.mp3"; 
 
 const App = () => {
   const [isLoaded, setIsLoaded] = useState(false); 
@@ -38,8 +40,9 @@ const App = () => {
         <CRTPreloader onComplete={handlePreloaderComplete} />
       ) : (
         <>
-          <MatrixOverlay />
-          <VaporWave />
+          {/* <MatrixOverlay />
+          <VaporWave /> */}
+          <SideScroller />
           {/* <audio ref={audioRef} src={backgroundMusic} loop autoPlay /> */}
         </>
       )}

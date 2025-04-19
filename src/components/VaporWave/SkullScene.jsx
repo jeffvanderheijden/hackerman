@@ -1,24 +1,19 @@
 import { useEffect, useState } from "react";
-import Dialog from "./../Dialog/Dialog";
-import DebugTheVirus from "./../DebugTheVirus/DebugTheVirus";
-import SkullHealthbar from "./SkullHealthbar";
-import imageSrc from "/images/skull.png";
 import * as THREE from "three";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
 import gsap from "gsap";
 
-const SkullScene = ({ 
-    canvasRef,
-    setWarningLoaded
-}) => {
-    const [healthbarVisible, setHealthbarVisible] = useState(false);
+import Dialog from "./../Dialog/Dialog";
+import DebugTheVirus from "./../DebugTheVirus/DebugTheVirus";
+import imageSrc from "/images/skull.png";
+
+const SkullScene = ({ canvasRef, setWarningLoaded, setModelLoaded }) => {
     const [currentDialog, setCurrentDialog] = useState(0);
     const [gameStarted, setGameStarted] = useState(false);
 
     useEffect(() => {
         if (!canvasRef || !canvasRef.current) return;
 
-        // --- Rotation state ---
         const idleRotation = { x: 0, y: 0 };
         const mouseOffsetRotation = { x: 0, y: 0 };
 
@@ -30,21 +25,17 @@ const SkullScene = ({
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-        const hemiLight = new THREE.HemisphereLight("#ffffff", "#222222", 1.5);
-        scene.add(hemiLight);
-
-        const directionalLight = new THREE.DirectionalLight("#ffffff", 5);
-        directionalLight.castShadow = true;
-        directionalLight.position.set(5, 5, 5);
-        scene.add(directionalLight);
-
-        const pointLight = new THREE.PointLight("#00ff99", 10, 25);
-        pointLight.castShadow = true;
-        pointLight.position.set(0, 3, 2);
-        scene.add(pointLight);
-
-        const ambientLight = new THREE.AmbientLight("#444444", 1.0);
-        scene.add(ambientLight);
+        const lights = [
+            new THREE.HemisphereLight("#ffffff", "#222222", 1.5),
+            new THREE.DirectionalLight("#ffffff", 5),
+            new THREE.PointLight("#00ff99", 10, 25),
+            new THREE.AmbientLight("#444444", 1.0),
+        ];
+        lights[1].castShadow = true;
+        lights[1].position.set(5, 5, 5);
+        lights[2].castShadow = true;
+        lights[2].position.set(0, 3, 2);
+        lights.forEach((light) => scene.add(light));
 
         const fresnelShader = {
             uniforms: {
@@ -79,137 +70,94 @@ const SkullScene = ({
         };
 
         const loader = new OBJLoader();
-        let skull;
-        let jaw = null;
-        let skullTop = null;
+        let skull, jaw, skullTop;
 
-        loader.load(
-            "/models/skull.obj",
-            (obj) => {
-                skull = obj;
-                obj.scale.set(0.01, 0.01, 0.01);
-                obj.position.set(0, 0.5, -2);
-        
-                obj.traverse((child) => {
-                    if (child.isMesh) {
-                        child.material = new THREE.ShaderMaterial(fresnelShader);
-                        if (child.name.toLowerCase().includes("jaw")) {
-                            jaw = child;
-                        } else if (child.name.toLowerCase().includes("head")) {
-                            skullTop = child;
-                        }
-                    }
-                });
-        
-                scene.add(obj);
-        
-                // Scale and move forward
-                gsap.to(obj.scale, {
-                    x: 0.08,
-                    y: 0.08,
-                    z: 0.08,
-                    duration: 1.2,
-                    delay: 1,
-                    ease: "power4.out",
-                });
-        
-                gsap.to(obj.position, {
-                    z: -0.5,
-                    duration: 1.2,
-                    delay: 1,
-                    ease: "power4.out",
-                });
-        
-                // Jaw scream
-                if (jaw) {
-                    gsap.to(jaw.rotation, {
-                        x: 0.65,
-                        duration: 1.0,
-                        delay: 0.8,
-                        ease: "back.out(3)",
-                        onComplete: () => {
-                            gsap.to(jaw.rotation, {
-                                x: 0.1,
-                                duration: 1.5,
-                                repeat: -1,
-                                yoyo: true,
-                                ease: "power2.inOut"
-                            });
-                        }
-                    });
-                }
-        
-                // ========== Progressive Camera Shake ==========
-        
-                const shakeCamera = (intensity, duration, repeat = 5) => {
-                    gsap.to(camera.position, {
-                        x: `+=${intensity}`,
-                        y: `+=${intensity * 0.66}`,
+        const shakeCamera = (intensity, duration, repeat = 5) => {
+            gsap.to(camera.position, {
+                x: `+=${intensity}`,
+                y: `+=${intensity * 0.66}`,
+                duration,
+                repeat,
+                yoyo: true,
+                ease: "power1.inOut",
+            });
+        };
+
+        const animateShaderOpacity = (object, delay = 1, duration = 1.5) => {
+            object.traverse((child) => {
+                if (child.isMesh && child.material?.uniforms?.opacity) {
+                    gsap.to(child.material.uniforms.opacity, {
+                        value: 1,
                         duration,
-                        repeat,
-                        yoyo: true,
-                        ease: "power1.inOut",
+                        delay,
+                        ease: "power2.out",
                     });
-                };
-        
-                // Stage 1: Light shake
-                gsap.delayedCall(0.3, () => shakeCamera(0.005, 0.05, 5));
-        
-                // Stage 2: Medium shake
-                gsap.delayedCall(1, () => shakeCamera(0.015, 0.05, 5));
-        
-                // Stage 3: Strong shake at scream peak
-                gsap.delayedCall(1.6, () => shakeCamera(0.03, 0.05, 6));
-        
-                // ========== Shader Fade-In ==========
-        
-                obj.traverse((child) => {
-                    if (child.isMesh && child.material && child.material.uniforms.opacity) {
-                        gsap.to(child.material.uniforms.opacity, {
-                            value: 1,
+                }
+            });
+        };
+
+        loader.load("/models/skull.obj", (obj) => {
+            skull = obj;
+            obj.scale.set(0.01, 0.01, 0.01);
+            obj.position.set(0, 0.5, -2);
+
+            obj.traverse((child) => {
+                if (child.isMesh) {
+                    child.material = new THREE.ShaderMaterial(fresnelShader);
+                    if (child.name.toLowerCase().includes("jaw")) jaw = child;
+                    if (child.name.toLowerCase().includes("head")) skullTop = child;
+                }
+            });
+
+            scene.add(obj);
+
+            gsap.to(obj.scale, { x: 0.08, y: 0.08, z: 0.08, duration: 1.2, delay: 1, ease: "power4.out" });
+            gsap.to(obj.position, { z: -0.5, duration: 1.2, delay: 1, ease: "power4.out" });
+
+            if (jaw) {
+                gsap.to(jaw.rotation, {
+                    x: 0.65,
+                    duration: 1.0,
+                    delay: 0.8,
+                    ease: "back.out(3)",
+                    onComplete: () => {
+                        gsap.to(jaw.rotation, {
+                            x: 0.1,
                             duration: 1.5,
-                            delay: 1,
-                            ease: "power2.out"
+                            repeat: -1,
+                            yoyo: true,
+                            ease: "power2.inOut",
                         });
-                    }
+                    },
                 });
-        
-                // ========== Retreat after scream ==========
-        
-                gsap.delayedCall(2.4, () => {
-                    gsap.to(obj.position, {
-                        z: -2,
-                        duration: 2,
-                        ease: "power2.inOut",
-                        onComplete: startIdleAnimation,
-                    });
-                });
-        
-                // ========== Skull Top Idle ==========
-        
-                if (skullTop) {
-                    gsap.to(skullTop.rotation, {
-                        x: "-=0.15",
-                        duration: 1.5,
-                        repeat: -1,
-                        yoyo: true,
-                        ease: "power2.inOut"
-                    });
-                }
-
-                if (jaw) {
-                    gsap.to(jaw.rotation, {
-                        x: "+=0.35",
-                        duration: 1.5,
-                        repeat: -1,
-                        yoyo: true,
-                        ease: "power2.inOut"
-                    });
-                }
             }
-        );              
 
-        // Idle Animation function
+            gsap.delayedCall(0.3, () => shakeCamera(0.005, 0.05, 5));
+            gsap.delayedCall(1, () => shakeCamera(0.015, 0.05, 5));
+            gsap.delayedCall(1.6, () => shakeCamera(0.03, 0.05, 6));
+
+            animateShaderOpacity(obj);
+
+            gsap.delayedCall(2.4, () => {
+                gsap.to(obj.position, {
+                    z: -2,
+                    duration: 2,
+                    ease: "power2.inOut",
+                    onComplete: startIdleAnimation,
+                });
+            });
+
+            if (skullTop) {
+                gsap.to(skullTop.rotation, {
+                    x: "-=0.15",
+                    duration: 1.5,
+                    repeat: -1,
+                    yoyo: true,
+                    ease: "power2.inOut",
+                });
+            }
+        });
+
         const startIdleAnimation = () => {
             gsap.to(skull.position, {
                 y: "+=0.05",
@@ -218,7 +166,7 @@ const SkullScene = ({
                 yoyo: true,
                 ease: "sine.inOut",
             });
-        
+
             gsap.to(idleRotation, {
                 x: 0.05,
                 y: 0.1,
@@ -227,7 +175,7 @@ const SkullScene = ({
                 yoyo: true,
                 ease: "sine.inOut",
             });
-        
+
             gsap.to(skull.scale, {
                 x: "+=0.005",
                 y: "+=0.005",
@@ -237,7 +185,7 @@ const SkullScene = ({
                 yoyo: true,
                 ease: "sine.inOut",
             });
-        
+
             if (jaw) {
                 gsap.to(jaw.rotation, {
                     x: "+=0.15",
@@ -251,10 +199,10 @@ const SkullScene = ({
 
         const onMouseMove = (event) => {
             if (!skull) return;
-        
+
             const x = (event.clientX / window.innerWidth) * 2 - 1;
             const y = -(event.clientY / window.innerHeight) * 2 + 1;
-        
+
             gsap.to(mouseOffsetRotation, {
                 x: -y * 0.2,
                 y: x * 0.5,
@@ -262,22 +210,22 @@ const SkullScene = ({
                 ease: "power2.out",
             });
         };
-        
+
         window.addEventListener("mousemove", onMouseMove);
-        
+
         const animate = () => {
             requestAnimationFrame(animate);
-        
+
             if (skull) {
                 skull.rotation.x = idleRotation.x + mouseOffsetRotation.x;
                 skull.rotation.y = idleRotation.y + mouseOffsetRotation.y;
             }
-        
+
             renderer.render(scene, camera);
         };
-        
+
         animate();
-        
+
         return () => {
             window.removeEventListener("mousemove", onMouseMove);
         };
@@ -285,41 +233,53 @@ const SkullScene = ({
 
     useEffect(() => {
         if (currentDialog === 0) {
-            setTimeout(() => {
-                setCurrentDialog(1);
-            }, 3000);
+            const timeout = setTimeout(() => setCurrentDialog(1), 3000);
+            return () => clearTimeout(timeout);
         }
-    }, []);
+    }, [currentDialog]);
 
     const startGame = () => {
         setGameStarted(true);
         setCurrentDialog(0);
-        setHealthbarVisible(true);
-    }
+    };
+
+    const hideGame = () => {
+        setCurrentDialog(null);
+        setModelLoaded(false);
+    };
 
     return (
         <div className="skull-scene">
             <div className="skull-scene-overlay" />
             <div className="skull-scene-inner">
                 <canvas ref={canvasRef} className="skull-webgl" />
-                {currentDialog === 1 && (
+                {currentDialog === 1 && !gameStarted && (
                     <Dialog
-                        name={"Bug"}
+                        name="Bug"
                         defaultOpen={true}
                         imageSrc={imageSrc}
-                        conversation={[{
-                            text: "Blargh! Ik ben een 'bug'! Ik ben hier om je systeem te verstoren!"} 
+                        conversation={[
+                            { text: "Blargh! Ik ben een 'bug'! Ik ben hier om je systeem te verstoren!" },
                         ]}
                         afterClose={startGame}
                     />
                 )}
-                {/* {healthbarVisible && (
-                    <SkullHealthbar />
-                )} */}
+                {currentDialog === 2 && (
+                    <Dialog
+                        name="Bug"
+                        defaultOpen={true}
+                        imageSrc={imageSrc}
+                        conversation={[
+                            { text: "Je wint deze keer! Maar dit is nog niet voorbij! Ik kom terug!" },
+                        ]}
+                        afterClose={hideGame}
+                    />
+                )}
                 {gameStarted && (
-                    <DebugTheVirus 
-                        setWarningLoaded={setWarningLoaded} 
+                    <DebugTheVirus
+                        setWarningLoaded={setWarningLoaded}
                         setGameStarted={setGameStarted}
+                        setCurrentDialog={setCurrentDialog}
                     />
                 )}
             </div>

@@ -69,9 +69,7 @@ const VaporWave = () => {
   return (
     <div className="vapor-wave">
       <div className="vapor-wave-bottom">
-        <TitleSection
-          handleGameStart={() => handleGameStart(sceneRef.current)}
-        />
+        <TitleSection handleGameStart={() => handleGameStart(sceneRef.current)} />
         {teacherLoaded && (
           <Dialog
             className={"jeff-intro-dialog"}
@@ -81,7 +79,7 @@ const VaporWave = () => {
             conversation={[
               {text: "Hey! Mijn naam is meneer van der Heijden."}, 
               {text: "Ik ben één van je docenten dit jaar."}, 
-              {text: "Je eerste-..."},
+              {text: "Welkom op het Grafisch-..."},
               {text: "Oh nee, een bug! Versla hem snel voordat--- @#{error: #002}", method: closeDialog1},
             ]}
             dialogRef={dialogRef}
@@ -107,12 +105,22 @@ const VaporWave = () => {
             </motion.div>
         )}
       </AnimatePresence>
-      {modelLoaded && (
-        <SkullScene
-          canvasRef={skullCanvasRef}
-          setWarningLoaded={setWarningLoaded}
-        />
-      )}
+      <AnimatePresence>
+        {modelLoaded && (
+          <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+          >
+            <SkullScene
+              canvasRef={skullCanvasRef}
+              setWarningLoaded={setWarningLoaded}
+              setModelLoaded={setModelLoaded}
+            />
+          </motion.div>  
+        )}    
+      </AnimatePresence>
     </div>
   );
 };

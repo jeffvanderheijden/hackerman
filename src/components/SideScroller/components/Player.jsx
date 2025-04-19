@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 const FRAME_COUNT = 3;
 const ANIMATION_SPEED = 150; // ms per frame
 
-const PlayerAnimated = ({ x, y, size, state, facing = 'right' }) => {
+const Player = ({ x, y, size, state, facing = 'right' }) => {
   const [frame, setFrame] = useState(0);
 
   // Animate frames on a steady interval
@@ -29,7 +29,7 @@ const PlayerAnimated = ({ x, y, size, state, facing = 'right' }) => {
       style={{
         position: 'absolute',
         left: x,
-        bottom: y - 4,
+        bottom: y + 8,
         width: size,
         height: size + 14,
         imageRendering: 'pixelated',
@@ -39,4 +39,4 @@ const PlayerAnimated = ({ x, y, size, state, facing = 'right' }) => {
   );
 };
 
-export default PlayerAnimated;
+export default Player;

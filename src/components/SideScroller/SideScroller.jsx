@@ -1,37 +1,42 @@
-import React, { useState, useRef, useEffect } from 'react';
-import Player from './components/PlayerAnimated';
+import React, { useState, useEffect } from 'react';
+import ParallaxLayer from './components/ParallaxLayer';
+import Player from './components/Player';
 import NPC from './components/NPC';
 import Tile from './components/Tile';
 import HUD from './components/HUD';
 import CharacterBar from './components/CharacterBar';
-import useControls from './game/useControls';
-import useGameLoop from './game/useGameLoop';
 import {
     TILE_SIZE,
-    GRAVITY,
     HUD_HEIGHT,
     npcPosition
 } from './game/constants';
-import dialogue from './dialogue/greeting.js';
 
 import backgroundImage from '/images/background1.png';
 import backgroundImage2 from '/images/background2.png';
 
+import useDialogue from './game/useDialogue';
+import usePlayer from './game/usePlayer';
+
+import "./SideScroller.css";
+
 const NUM_TILES = 100;
 
 function SideScroller() {
-    const [variables, setVariables] = useState({});
-    const [pos, setPos] = useState({ x: 0, y: 0 });
     const [cameraOffset, setCameraOffset] = useState(0);
-    const [interactionKey, setInteractionKey] = useState(null);
-    const [customInteraction, setCustomInteraction] = useState(null);
 
-    const posRef = useRef(pos);
-    const velRef = useRef({ x: 0, y: 0 });
-    const keys = useRef({ left: false, right: false });
+    const {
+        interaction,
+        variables,
+        handleSelect,
+        handleNPCInteract
+    } = useDialogue();
 
-    useControls(keys, velRef, posRef);
-    useGameLoop(posRef, velRef, setPos, NUM_TILES, TILE_SIZE, GRAVITY);
+    const {
+        pos,
+        isMoving,
+        isJumping,
+        isMovingLeft
+    } = usePlayer(NUM_TILES);
 
     useEffect(() => {
         const scrollThreshold = 300;
@@ -39,68 +44,17 @@ function SideScroller() {
         setCameraOffset((prevOffset) => (prevOffset !== newOffset ? newOffset : prevOffset));
     }, [pos.x]);
 
-    const isMoving = keys.current.left || keys.current.right;
-    const isJumping = pos.y > 0;
-    const isMovingLeft = keys.current.left && !keys.current.right;
-
-    const rawInteraction = customInteraction || (interactionKey ? dialogue[interactionKey] : null);
-    const interaction = typeof rawInteraction?.line === 'function'
-        ? { ...rawInteraction, line: rawInteraction.line(variables) }
-        : rawInteraction;
-
-    const handleNPCInteract = () => {
-        setInteractionKey("greeting");
-        setCustomInteraction(null);
-    };
-
-    const handleSelect = (result) => {
-        if (typeof result === 'object' && result !== null && result.line) {
-            if (result.set) {
-                setVariables(prev => ({ ...prev, ...result.set }));
-            }
-            setCustomInteraction(result);
-        } else if (typeof result === 'string') {
-            const nextKey = interaction?.next?.[result] || null;
-            setInteractionKey(nextKey);
-            setCustomInteraction(null);
-        } else {
-            setInteractionKey(null);
-            setCustomInteraction(null);
-        }
-    };
-
     return (
         <>
-            <div style={styles.container}>
-                {/* Parallax Background Layer 1 */}
-                <div
-                    style={{
-                        ...styles.parallax,
-                        backgroundImage: `url(${backgroundImage})`,
-                        backgroundPosition: `${-cameraOffset * 0.3}px center`,
-                        opacity: 0.3,
-                        zIndex: 0,
-                    }}
-                />
-
-                {/* Parallax Background Layer 2 (new) */}
-                <div
-                    style={{
-                        ...styles.parallax,
-                        backgroundImage: `url(${backgroundImage2})`,
-                        backgroundPosition: `${-cameraOffset * 0.6}px center`,
-                        opacity: 0.8,
-                        zIndex: 1,
-                    }}
-                />
+            <div className={"sideScrollerContainer"}>
+                <ParallaxLayer image={backgroundImage} speed={0.3} opacity={0.3} zIndex={0} offset={cameraOffset} />
+                <ParallaxLayer image={backgroundImage2} speed={0.6} opacity={0.8} zIndex={1} offset={cameraOffset} />
 
                 <div
-                    style={{
-                        ...styles.scrollLayer,
-                        transform: `translateX(${-cameraOffset}px)`
-                    }}
+                    className={"scrollLayer"}
+                    style={{ transform: `translateX(${-cameraOffset}px)` }}
                 >
-                    <div style={styles.ground}>
+                    <div className={"ground"}>
                         {Array.from({ length: NUM_TILES }).map((_, i) => (
                             <Tile key={i} size={TILE_SIZE} />
                         ))}
@@ -135,37 +89,5 @@ function SideScroller() {
         </>
     );
 }
-
-const styles = {
-    container: {
-        position: 'relative',
-        backgroundColor: 'black',
-        height: '320px',
-        width: '50%',
-        paddingBottom: `${HUD_HEIGHT}px`,
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'flex-end',
-        overflow: 'hidden',
-    },
-    parallax: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        height: '100%',
-        width: '100%',
-        backgroundRepeat: 'repeat-x',
-        backgroundSize: 'auto 100%',
-        pointerEvents: 'none',
-    },
-    scrollLayer: {
-        position: 'relative',
-        transition: 'transform 0.01s linear',
-        zIndex: 1,
-    },
-    ground: {
-        display: 'flex',
-    },
-};
 
 export default SideScroller;

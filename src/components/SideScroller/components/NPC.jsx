@@ -56,7 +56,7 @@ const NPC = ({ x, y, size, offset, onInteract, playerX }) => {
       style={{
         position: 'absolute',
         left: x,
-        bottom: y - 8,
+        bottom: y + 8,
         width: size,
         height: size + 10,
         imageRendering: 'pixelated',

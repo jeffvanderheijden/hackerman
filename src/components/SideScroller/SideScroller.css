@@ -1,0 +1,21 @@
+.sideScrollerContainer {
+    position: relative;
+    background-color: black;
+    height: 320px;
+    width: 50%;
+    padding-bottom: var(--hud-height);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    overflow: hidden;
+}
+
+.scrollLayer {
+    position: relative;
+    transition: transform 0.01s linear;
+    z-index: 1;
+}
+
+.ground {
+    display: flex;
+}

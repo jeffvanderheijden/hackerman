@@ -12,6 +12,7 @@
     left: 20px;
     font-family: 'Press Start 2P', monospace;
     color: #1fdf1f;
+    z-index: 100;
 }
 
 .char-icon {
@@ -35,14 +36,16 @@
 
 .char-health {
     background-color: #0f1f0f;
-    /* border: 1px solid #1f3f1f; */
     height: 8px;
     position: relative;
+    border: 1px solid #1f3f1f;
+    overflow: hidden;
 }
 
 .char-health-fill {
-    background-color: #1fdf1f;
     height: 100%;
     width: 100%;
     clip-path: polygon(0 0, 100% 0, calc(100% - 6px) 100%, 0% 100%);
+    background-color: #1fdf1f;
+    transition: width 0.4s ease, background-color 0.3s ease;
 }

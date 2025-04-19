@@ -19,3 +19,9 @@
 .ground {
     display: flex;
 }
+
+@keyframes flash {
+    50% {
+        opacity: 0.2;
+    }
+}

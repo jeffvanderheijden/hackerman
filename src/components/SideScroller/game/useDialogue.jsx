@@ -5,6 +5,7 @@ export default function useDialogue() {
     const [variables, setVariables] = useState({});
     const [interactionKey, setInteractionKey] = useState(null);
     const [customInteraction, setCustomInteraction] = useState(null);
+    const [selectedOptions, setSelectedOptions] = useState(new Set());
 
     const rawInteraction = customInteraction || (interactionKey ? dialogue[interactionKey] : null);
     const interaction = typeof rawInteraction?.line === 'function'
@@ -26,11 +27,12 @@ export default function useDialogue() {
             const nextKey = interaction?.next?.[result] || null;
             setInteractionKey(nextKey);
             setCustomInteraction(null);
+            setSelectedOptions(prev => new Set(prev).add(result));
         } else {
             setInteractionKey(null);
             setCustomInteraction(null);
         }
     };
 
-    return { interaction, variables, handleSelect, handleNPCInteract };
+    return { interaction, variables, handleSelect, handleNPCInteract, selectedOptions };
 }

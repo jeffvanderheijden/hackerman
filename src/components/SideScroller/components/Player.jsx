@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 const FRAME_COUNT = 3;
 const ANIMATION_SPEED = 150; // ms per frame
 
-const Player = ({ x, y, size, state, facing = 'right' }) => {
+const Player = ({ x, y, size, state, facing = 'right', isInvincible = false }) => {
   const [frame, setFrame] = useState(0);
 
   // Animate frames on a steady interval
@@ -34,7 +34,8 @@ const Player = ({ x, y, size, state, facing = 'right' }) => {
         height: size + 14,
         imageRendering: 'pixelated',
         transform: facing === 'left' ? 'scaleX(-1)' : 'none',
-      }}
+        animation: isInvincible ? 'flash 0.2s step-start infinite' : 'none'
+      }}      
     />
   );
 };

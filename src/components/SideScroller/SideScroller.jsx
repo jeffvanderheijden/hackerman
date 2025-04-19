@@ -4,6 +4,7 @@ import Player from './components/Player';
 import NPC from './components/NPC';
 import Tile from './components/Tile';
 import HUD from './components/HUD';
+import Bug from './components/Bug';
 import CharacterBar from './components/CharacterBar';
 import {
     TILE_SIZE,
@@ -23,12 +24,21 @@ const NUM_TILES = 100;
 
 function SideScroller() {
     const [cameraOffset, setCameraOffset] = useState(0);
+    const [health, setHealth] = useState(100);
+    const [lastHitTime, setLastHitTime] = useState(0);
+    const [isInvincible, setIsInvincible] = useState(false);
+
+    const defaultInteraction = {
+        line: "Use ← → to move. Press ↑ or Space to jump. Press [E] to interact.",
+        options: []
+    };
 
     const {
         interaction,
         variables,
         handleSelect,
-        handleNPCInteract
+        handleNPCInteract,
+        selectedOptions,
     } = useDialogue();
 
     const {
@@ -42,6 +52,16 @@ function SideScroller() {
         const scrollThreshold = 300;
         const newOffset = pos.x > scrollThreshold ? pos.x - scrollThreshold : 0;
         setCameraOffset((prevOffset) => (prevOffset !== newOffset ? newOffset : prevOffset));
+    }, [pos.x]);
+
+    useEffect(() => {
+        const distance = Math.abs(pos.x - npcPosition.x * TILE_SIZE);
+        const INTERACTION_DISTANCE = TILE_SIZE * 2;
+
+        if (distance > INTERACTION_DISTANCE && interaction) {
+            // Close the dialogue if player walks away
+            handleSelect(null);
+        }
     }, [pos.x]);
 
     return (
@@ -68,23 +88,41 @@ function SideScroller() {
                         playerX={pos.x}
                         onInteract={handleNPCInteract}
                     />
+                    <Bug
+                        x={25 * TILE_SIZE}
+                        y={0}
+                        size={TILE_SIZE}
+                        playerX={pos.x}
+                        playerY={pos.y}                        
+                        onCollide={() => {
+                            const now = Date.now();
+                            if (!isInvincible && now - lastHitTime > 1000) {
+                                setHealth(h => Math.max(h - 25, 0));
+                                setLastHitTime(now);
+                                setIsInvincible(true);
+                                setTimeout(() => setIsInvincible(false), 2000); // 1 second invincibility
+                            }
+                        }}
+                    />
                     <Player
                         x={pos.x}
                         y={pos.y}
                         size={TILE_SIZE}
                         offset={HUD_HEIGHT}
+                        isInvincible={isInvincible}
                         state={isJumping ? 'jump' : isMoving ? 'walk' : 'idle'}
                         facing={isMovingLeft ? 'left' : 'right'}
                     />
                 </div>
 
-                <CharacterBar />
+                <CharacterBar health={health} />
             </div>
 
             <HUD
-                interaction={interaction}
+                interaction={interaction || defaultInteraction}
                 onSelect={handleSelect}
                 variables={variables}
+                selectedOptions={selectedOptions}
             />
         </>
     );

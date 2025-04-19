@@ -1,31 +1,50 @@
 import React, { useEffect, useState } from 'react';
 
-const HUD = ({ interaction, onSelect }) => {
+const HUD = ({ interaction, onSelect, selectedOptions }) => {
     const [input, setInput] = useState("");
+    const [justSelected, setJustSelected] = useState(false);
 
+    const isInputMode = interaction?.type === 'input';
+
+    // Handle hotkey selection (1, 2, 3)
     useEffect(() => {
         const handleKeyPress = (e) => {
             const key = e.key;
-            if (interaction?.type === 'input') { return }; // skip key press if input mode
+            if (isInputMode || justSelected) return;
 
-            if (interaction && ["1", "2", "3"].includes(key)) {
+            if (interaction?.options && ["1", "2", "3"].includes(key)) {
                 const index = parseInt(key, 10) - 1;
-                if (interaction.options[index]) {
-                    onSelect(interaction.options[index]);
+                const option = interaction.options[index];
+
+                if (option) {
+                    onSelect(option);
+                    setJustSelected(true);
+                    setTimeout(() => setJustSelected(false), 100);
                 }
             }
         };
+
         window.addEventListener('keydown', handleKeyPress);
         return () => window.removeEventListener('keydown', handleKeyPress);
-    }, [interaction, onSelect]);
+    }, [interaction, onSelect, isInputMode, justSelected]);
 
+    // Reset input when interaction changes
     useEffect(() => {
         setInput("");
     }, [interaction]);
 
+    // Auto-focus the input field
+    useEffect(() => {
+        if (isInputMode) {
+            setTimeout(() => {
+                document.getElementById('hud-input')?.focus();
+            }, 0);
+        }
+    }, [isInputMode]);
+
     if (!interaction) return null;
 
-    const { line, options, type, validate } = interaction;
+    const { line, options, validate } = interaction;
 
     const handleInputSubmit = (e) => {
         e.preventDefault();
@@ -39,21 +58,30 @@ const HUD = ({ interaction, onSelect }) => {
         <div style={styles.terminal}>
             <div style={styles.output}>{line}</div>
 
-            {type === 'input' ? (
+            {isInputMode ? (
                 <form onSubmit={handleInputSubmit}>
                     <input
-                        autoFocus
+                        id="hud-input"
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         style={styles.input}
                     />
                 </form>
             ) : (
-                options?.map((option, index) => (
-                    <div key={index} style={styles.option}>
-                        <span style={styles.prompt}>[{index + 1}]</span> {option}
-                    </div>
-                ))
+                options?.map((option, index) => {
+                    const wasSelected = selectedOptions?.has(option);
+                    return (
+                        <div
+                            key={index}
+                            style={{
+                                ...styles.option,
+                                ...(wasSelected ? styles.optionUsed : {})
+                            }}
+                        >
+                            <span style={styles.prompt}>[{index + 1}]</span> {option}
+                        </div>
+                    );
+                })
             )}
         </div>
     );
@@ -75,6 +103,10 @@ const styles = {
     },
     option: {
         marginBottom: '4px',
+    },
+    optionUsed: {
+        opacity: 0.4,
+        fontStyle: 'italic',
     },
     prompt: {
         color: '#0f0',

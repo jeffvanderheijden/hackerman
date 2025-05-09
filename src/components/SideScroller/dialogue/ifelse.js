@@ -1,4 +1,4 @@
-const dialogueIfElse = {
+const dialogue = {
     greeting_ifelse: {
         line: "Hey there, rookie. Let's talk logic.",
         options: ["What kind of logic?"],
@@ -44,4 +44,4 @@ const dialogueIfElse = {
     }
 };
 
-export default dialogueIfElse;
+export default dialogue;

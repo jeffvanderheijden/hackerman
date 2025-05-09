@@ -7,7 +7,7 @@ import Dialog from "./../Dialog/Dialog";
 import DebugTheVirus from "./../DebugTheVirus/DebugTheVirus";
 import imageSrc from "/images/skull.png";
 
-const SkullScene = ({ canvasRef, setWarningLoaded, setModelLoaded }) => {
+const SkullScene = ({ canvasRef, setWarningLoaded, setModelLoaded, setSideScroller }) => {
     const [currentDialog, setCurrentDialog] = useState(0);
     const [gameStarted, setGameStarted] = useState(false);
 
@@ -246,6 +246,7 @@ const SkullScene = ({ canvasRef, setWarningLoaded, setModelLoaded }) => {
     const hideGame = () => {
         setCurrentDialog(null);
         setModelLoaded(false);
+        setSideScroller(true);
     };
 
     return (

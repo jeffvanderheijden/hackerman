@@ -1,0 +1,32 @@
+.help-icon {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background-color: #0a0f0a;
+    border: 1px solid #0f3f0f;
+    color: #00ff00;
+    font-family: 'Press Start 2P', monospace;
+    font-weight: bold;
+    width: 24px;
+    height: 24px;
+    font-size: 14px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 24px;
+    cursor: default;
+    z-index: 999;
+}
+
+.help-tooltip {
+    position: absolute;
+    font-family: monospace;
+    top: 32px;
+    right: 0;
+    color: #00ff00;
+    padding: 10px;
+    font-size: 12px;
+    background-color: #0a0f0a;
+    border: 1px solid #0f3f0f;
+    white-space: nowrap;
+    z-index: 999;
+}

@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import gsap from "gsap";
 import "./VaporWave.css";
-import videoSrc from "/video/digiJeff.mp4"
+import videoSrc from "/video/digiJeff.mp4";
 
 import Dialog from "./../Dialog/Dialog";
 import VirusWarning from "./../DebugTheVirus/VirusWarning";
@@ -10,7 +10,7 @@ import TitleSection from "./TitleSection";
 import VaporWaveScene from "./VaporWaveScene";
 import SkullScene from "./SkullScene";
 
-const VaporWave = () => {
+const VaporWave = ({ setSideScroller }) => {
   const canvasRef = useRef(null);
   const skullCanvasRef = useRef(null);
   const sceneRef = useRef(null);
@@ -117,6 +117,7 @@ const VaporWave = () => {
               canvasRef={skullCanvasRef}
               setWarningLoaded={setWarningLoaded}
               setModelLoaded={setModelLoaded}
+              setSideScroller={setSideScroller}
             />
           </motion.div>  
         )}    

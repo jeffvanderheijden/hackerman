@@ -1,5 +1,6 @@
 .sideScroller {
-    position: relative;
+    position: fixed;
+    bottom: 0;
     width: 100vw;
     height: 100vh;
     display: flex;
@@ -13,7 +14,7 @@
     background-color: black;
     height: 320px;
     width: 40%;
-    padding-bottom: var(--hud-height);
+    margin-bottom: 200px;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;

@@ -1,14 +1,16 @@
 // useDialogue.js
 import { useState } from 'react';
-import dialogue1 from './../dialogue/greeting.js';
-import dialogue2 from './../dialogue/ifelse.js'; // import new dialogue
+import dialogue1 from './../dialogue/variable.js';
+import dialogue2 from './../dialogue/ifelse.js'; 
+import dialogue3 from './../dialogue/boss.js';
 
 const combinedDialogue = {
   ...dialogue1,
   ...dialogue2,
+  ...dialogue3
 };
 
-export default function useDialogue() {
+export default function useDialogue(setHealth) {
   const [variables, setVariables] = useState({});
   const [interactionKey, setInteractionKey] = useState(null);
   const [customInteraction, setCustomInteraction] = useState(null);
@@ -34,8 +36,14 @@ export default function useDialogue() {
       }
       setCustomInteraction(result);
     } else if (typeof result === 'string') {
-      const nextKey = interaction?.next?.[result] || null;
-      setInteractionKey(nextKey);
+      const nextKey = interaction?.next?.[result];
+      const nextInteraction = combinedDialogue[nextKey];
+
+      if (nextInteraction?.damage) {
+        setHealth?.(prev => Math.max(prev - nextInteraction.damage, 0));
+      }
+
+      setInteractionKey(nextKey || null);
       setCustomInteraction(null);
       setSelectedOptions(prev => new Set(prev).add(result));
     } else {

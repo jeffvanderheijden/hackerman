@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
 import ParallaxLayer from './components/ParallaxLayer';
+import HelpTooltip from './components/HelpTooltip';
 import Player from './components/Player';
 import NPC from './components/NPC';
 import NPC2 from './components/NPC2';
@@ -25,6 +26,7 @@ import usePlayer from './game/usePlayer';
 import "./SideScroller.css";
 
 const NUM_TILES = 100;
+const BOSS_TRIGGER_X = (NUM_TILES - 2) * TILE_SIZE;
 
 function SideScroller() {
     const [isFading, setIsFading] = useState(false);
@@ -33,11 +35,10 @@ function SideScroller() {
     const [lastHitTime, setLastHitTime] = useState(0);
     const [isInvincible, setIsInvincible] = useState(false);
     const [activeNpcPos, setActiveNpcPos] = useState(null);
+    const [hasTriggeredBoss, setHasTriggeredBoss] = useState(false);
+    const [isFrozen, setIsFrozen] = useState(false);
 
-    const defaultInteraction = {
-        line: "Use ← → to move. Press Space to jump. Press [E] to interact.",
-        options: []
-    };
+    const defaultInteraction = null;
 
     const {
         interaction,
@@ -45,7 +46,7 @@ function SideScroller() {
         handleSelect,
         handleNPCInteract,
         selectedOptions,
-    } = useDialogue();
+    } = useDialogue(setHealth);
 
     const resolvedInteraction = interaction
         ? {
@@ -59,21 +60,28 @@ function SideScroller() {
         }
         : defaultInteraction;
 
-
     const {
         pos,
         setPos,
         posRef,
+        velRef,
+        keys,
         isMoving,
         isJumping,
         isMovingLeft
-    } = usePlayer(NUM_TILES);
+    } = usePlayer(NUM_TILES, isFrozen);
 
     useEffect(() => {
         const scrollThreshold = 300;
         const newOffset = pos.x > scrollThreshold ? pos.x - scrollThreshold : 0;
         setCameraOffset((prevOffset) => (prevOffset !== newOffset ? newOffset : prevOffset));
     }, [pos.x]);
+
+    useEffect(() => {
+        if (health <= 0 && !isFading) {
+            triggerRespawn();
+        }
+    }, [health]);
 
     useEffect(() => {
         const INTERACTION_DISTANCE = TILE_SIZE * 2;
@@ -87,8 +95,16 @@ function SideScroller() {
         }
     }, [pos.x, interaction, activeNpcPos]);
 
+    useEffect(() => {
+        if (!hasTriggeredBoss && pos.x >= BOSS_TRIGGER_X) {
+            setHasTriggeredBoss(true);
+            setIsFrozen(true); // ❄️ Freeze player
+            handleNPCInteract("greeting_boss");
+        }
+    }, [pos.x, hasTriggeredBoss]);
+
     const triggerRespawn = () => {
-        setIsFading(true); // trigger fade in
+        setIsFading(true);
 
         setTimeout(() => {
             setHealth(100);
@@ -97,14 +113,21 @@ function SideScroller() {
             setCameraOffset(0);
             setPos({ x: 0, y: 0 });
             posRef.current = { x: 0, y: 0 };
-
-            setIsFading(false); // trigger fade out
+            keys.current = { left: false, right: false }; 
+            velRef.current = { x: 0, y: 0 }; 
+            setIsFrozen(false);
+            setIsFading(false);
+            handleSelect(null);
+            setActiveNpcPos(null);
+            setHasTriggeredBoss(false);
 
             setTimeout(() => {
                 setIsInvincible(false);
             }, 2000);
-        }, 1000); // delay before respawn
+        }, 1000);
     };
+
+
 
     return (
         <div className={"sideScroller"}>
@@ -161,10 +184,6 @@ function SideScroller() {
                                 setIsInvincible(true);
 
                                 setTimeout(() => setIsInvincible(false), 2000); // 2s invincible
-
-                                if (newHealth <= 0) {
-                                    triggerRespawn();
-                                }
                             }
                         }}
                     />
@@ -183,10 +202,6 @@ function SideScroller() {
                                 setIsInvincible(true);
 
                                 setTimeout(() => setIsInvincible(false), 2000); // 2s invincible
-
-                                if (newHealth <= 0) {
-                                    triggerRespawn();
-                                }
                             }
                         }}
                     />
@@ -201,11 +216,12 @@ function SideScroller() {
                         size={TILE_SIZE}
                         offset={HUD_HEIGHT}
                         isInvincible={isInvincible}
-                        state={isJumping ? 'jump' : isMoving ? 'walk' : 'idle'}
+                        state={isFrozen ? 'idle' : isJumping ? 'jump' : isMoving ? 'walk' : 'idle'}
                         facing={isMovingLeft ? 'left' : 'right'}
                     />
                 </div>
 
+                <HelpTooltip />
                 <CharacterBar health={health} />
             </div>
 
@@ -220,7 +236,7 @@ function SideScroller() {
                     />
                 )}
             </AnimatePresence>
-            
+
             <HUD
                 interaction={resolvedInteraction}
                 onSelect={handleSelect}

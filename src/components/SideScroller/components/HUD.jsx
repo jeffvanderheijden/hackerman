@@ -58,7 +58,7 @@ const HUD = ({ interaction, onSelect, selectedOptions }) => {
 
     return (
         <div style={styles.terminal}>
-            <div style={styles.output}>{line}</div>
+            <div style={styles.output}>"{line}"</div>
 
             {isInputMode ? (
                 <form onSubmit={handleInputSubmit}>
@@ -92,7 +92,8 @@ const HUD = ({ interaction, onSelect, selectedOptions }) => {
 const styles = {
     terminal: {
         width: 'calc(40% - 20px)',
-        height: '200px',
+        height: 'calc(200px - 20px)',
+        marginTop: '-200px',
         background: '#000',
         color: '#00FF00',
         fontFamily: 'monospace',
@@ -102,6 +103,7 @@ const styles = {
     },
     output: {
         marginBottom: '8px',
+        lineHeight: '18px',
     },
     option: {
         marginBottom: '4px',

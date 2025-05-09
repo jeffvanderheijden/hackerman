@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
 
-export default function useControls(keys, velRef, posRef) {
+export default function useControls(keys, velRef, posRef, isFrozen = false) {
     useEffect(() => {
+        if (isFrozen) return;
+
         const handleKeyDown = (e) => {
             if (e.code === "ArrowLeft") {
                 keys.current.left = true;
@@ -32,5 +34,5 @@ export default function useControls(keys, velRef, posRef) {
             window.removeEventListener("keydown", handleKeyDown);
             window.removeEventListener("keyup", handleKeyUp);
         };
-    }, []);
+    }, [isFrozen]);
 }

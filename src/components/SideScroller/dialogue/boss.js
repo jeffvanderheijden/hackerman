@@ -58,6 +58,37 @@ const dialogue = {
             "Back to question": "boss_question3"
         }
     },
+
+    boss_question3: {
+        line: "What is a loop useful for?",
+        options: [
+            "Repeating code multiple times",
+            "Making the game lag",
+            "Decorating your code"
+        ],
+        next: {
+            "Repeating code multiple times": "boss_defeated",
+            "Making the game lag": "wrong3",
+            "Decorating your code": "wrong3"
+        }
+    },
+
+    wrong3: {
+        line: "Tsk tsk! Didn't you learn *anything* from that last robot?",
+        options: ["Try again."],
+        damage: 25,
+        next: {
+            "Try again.": "boss_question3"
+        }
+    },
+
+    boss_defeated: {
+        line: "Nooo! Impossible... You actually learned something...",
+        options: ["Escape the program"],
+        next: {
+            "Escape the program": null
+        }
+    }
 };
 
 export default dialogue;

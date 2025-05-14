@@ -7,3 +7,4 @@ export const HUD_HEIGHT = 80;
 
 export const npcPosition = { x: 10, y: 0 };
 export const npc2Position = { x: 30, y: 0 };
+export const npc3Position = { x: 50, y: 0 };

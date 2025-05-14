@@ -5,16 +5,20 @@ import HelpTooltip from './components/HelpTooltip';
 import Player from './components/Player';
 import NPC from './components/NPC';
 import NPC2 from './components/NPC2';
+import NPC3 from './components/NPC3';
 import Tile from './components/Tile';
 import HUD from './components/HUD';
 import Bug from './components/Bug';
 import Boss from './components/Boss';
 import CharacterBar from './components/CharacterBar';
+import LevelComplete from './components/LevelComplete';
+
 import {
     TILE_SIZE,
     HUD_HEIGHT,
     npcPosition,
-    npc2Position
+    npc2Position,
+    npc3Position
 } from './game/constants';
 
 import backgroundImage from '/images/background1.png';
@@ -46,7 +50,8 @@ function SideScroller() {
         handleSelect,
         handleNPCInteract,
         selectedOptions,
-    } = useDialogue(setHealth);
+        hasCompletedGame
+      } = useDialogue(setHealth);
 
     const resolvedInteraction = interaction
         ? {
@@ -169,6 +174,18 @@ function SideScroller() {
                             setActiveNpcPos(npc2Position.x * TILE_SIZE);
                         }}
                     />
+                    <NPC3
+                        x={npc3Position.x * TILE_SIZE}
+                        y={npc3Position.y * TILE_SIZE}
+                        size={TILE_SIZE}
+                        offset={HUD_HEIGHT}
+                        playerX={pos.x}
+                        playerName={variables.playerName}
+                        onInteract={() => {
+                            handleNPCInteract("greeting_loops");
+                            setActiveNpcPos(npc3Position.x * TILE_SIZE);
+                        }}
+                    />
                     <Bug
                         x={25 * TILE_SIZE}
                         y={0}
@@ -205,6 +222,24 @@ function SideScroller() {
                             }
                         }}
                     />
+                    <Bug
+                        x={65 * TILE_SIZE}
+                        y={0}
+                        size={TILE_SIZE}
+                        playerX={pos.x}
+                        playerY={pos.y}
+                        onCollide={() => {
+                            const now = Date.now();
+                            if (!isInvincible && now - lastHitTime > 1000) {
+                                const newHealth = Math.max(health - 25, 0);
+                                setHealth(newHealth);
+                                setLastHitTime(now);
+                                setIsInvincible(true);
+
+                                setTimeout(() => setIsInvincible(false), 2000); // 2s invincible
+                            }
+                        }}
+                    />
                     <Boss
                         x={100 * TILE_SIZE}
                         y={0}
@@ -220,6 +255,13 @@ function SideScroller() {
                         facing={isMovingLeft ? 'left' : 'right'}
                     />
                 </div>
+
+                {hasCompletedGame && (
+                    <LevelComplete onContinue={() => {
+                        // reset game, go to credits, or redirect
+                        console.log("Player finished the game!");
+                    }} />
+                )}
 
                 <HelpTooltip />
                 <CharacterBar health={health} />
